@@ -1,10 +1,11 @@
+#include "input_task_1.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "input_task_1.h"
 
-int main() {
-    int a = input((char*) "a");
-    int b = input((char*) "b");
+int main()
+{
+    int a = input((char*)"a");
+    int b = input((char*)"b");
     int r = 0;
     int a_abs = abs(a);
     int b_abs = abs(b);
