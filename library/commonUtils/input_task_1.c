@@ -1,10 +1,10 @@
 #include "input_task_1.h"
 #include <stdio.h>
 
-int integerInput(char name_of_var)
+int integerInput(char nameOfVar)
 {
     int digit = 0;
-    printf("Ввелите целое число %c: ", name_of_var);
+    printf("Ввелите целое число %c: ", nameOfVar);
     scanf("%d", &digit);
     return digit;
 }

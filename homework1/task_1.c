@@ -7,10 +7,6 @@ int gettingIncompleteQuotient(int dividend, int divisor)
     int quotient = 0;
     int dividend_abs = abs(dividend);
     int divisor_abs = abs(divisor);
-    if (divisor == 0) {
-        printf("Error was handed. Division by zero.\n");
-        return 0;
-    }
     while (dividend_abs >= divisor_abs) {
         dividend_abs -= divisor_abs;
         ++quotient;
@@ -28,6 +24,10 @@ int main()
 {
     int integerA = integerInput('a');
     int integerB = integerInput('b');
+    if (integerB == 0) {
+        printf("Error was handed. Division by zero.\n");
+        return 0;
+    }
     printf("Неполное частное равно %d", gettingIncompleteQuotient(integerA, integerB));
     return 0;
 }
