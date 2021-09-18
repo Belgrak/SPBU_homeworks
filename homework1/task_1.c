@@ -5,10 +5,10 @@
 int gettingIncompleteQuotient(int dividend, int divisor)
 {
     int quotient = 0;
-    int dividend_abs = abs(dividend);
-    int divisor_abs = abs(divisor);
-    while (dividend_abs >= divisor_abs) {
-        dividend_abs -= divisor_abs;
+    int dividendAbs = abs(dividend);
+    int divisorAbs = abs(divisor);
+    while (dividendAbs >= divisorAbs) {
+        dividendAbs -= divisorAbs;
         ++quotient;
     }
     if (dividend < 0) {
