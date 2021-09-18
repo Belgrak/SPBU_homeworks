@@ -1,24 +1,33 @@
-#include "input_task_1.h"
+#include "../library/commonUtils/input_task_1.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+int gettingIncompleteQuotient(int dividend, int divisor)
+{
+    int quotient = 0;
+    int dividend_abs = abs(dividend);
+    int divisor_abs = abs(divisor);
+    if (divisor == 0) {
+        printf("Error was handed. Division by zero.\n");
+        return 0;
+    }
+    while (dividend_abs >= divisor_abs) {
+        dividend_abs -= divisor_abs;
+        ++quotient;
+    }
+    if (dividend < 0) {
+        quotient = (-1) * quotient - 1;
+    }
+    if (divisor < 0) {
+        quotient = (-1) * quotient;
+    }
+    return quotient;
+}
+
 int main()
 {
-    int a = input((char*)"a");
-    int b = input((char*)"b");
-    int r = 0;
-    int a_abs = abs(a);
-    int b_abs = abs(b);
-    while (a_abs >= b_abs) {
-        a_abs = a_abs - b_abs;
-        ++r;
-    }
-    if (a < 0) {
-        r = (-1) * r - 1;
-    }
-    if (b < 0) {
-        r = (-1) * r;
-    }
-    printf("Неполное частное равно %d", r);
+    int integerA = integerInput('a');
+    int integerB = integerInput('b');
+    printf("Неполное частное равно %d", gettingIncompleteQuotient(integerA, integerB));
     return 0;
 }
