@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool isSimple(int number)
+bool isPrime(int number)
 {
     int d = 2;
     while (d * d <= number && number % d != 0)
@@ -16,7 +16,7 @@ int main()
     int integerA = integerInput('a');
     bool firstTimeAndSimple = true;
     for (int i = 2; i <= integerA; i++) {
-        if (isSimple(i)) {
+        if (isPrime(i)) {
             if (firstTimeAndSimple) {
                 printf("Простые числа: ");
                 firstTimeAndSimple = false;
