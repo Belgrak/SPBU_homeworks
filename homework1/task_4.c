@@ -6,8 +6,10 @@ bool isPrime(int number)
 {
     int d = 2;
     while (number > d) {
-        if (number % d == 0) return false;
-        else d++;
+        if (number % d == 0)
+            return false;
+        else
+            d++;
     }
     return true;
 }
