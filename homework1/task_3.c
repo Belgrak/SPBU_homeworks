@@ -17,6 +17,10 @@ int main()
     int summaryArraySize = 0, firstArrayLength = 0;
     printf("Введите кол-во элементов в массиве и длину первого подмассива: ");
     scanf("%d  %d", &summaryArraySize, &firstArrayLength);
+    if (summaryArraySize <= 0) {
+        printf("Error handed. Wrong array size.");
+        return 0;
+    }
     if (firstArrayLength > summaryArraySize || firstArrayLength < 0) {
         printf("Error handed. You have a mistake in a first array length");
         return 0;
@@ -27,9 +31,8 @@ int main()
         scanf("%d", &summaryArray[i]);
     }
     replacingBeginAndEndOfArray(summaryArray, summaryArraySize, firstArrayLength);
+    printf("Измененный массив: ");
     for (int i = 0; i < summaryArraySize; i++) {
-        if (i == 0)
-            printf("Измененный массив: ");
         printf("%d ", summaryArray[i]);
     }
     free(summaryArray);
