@@ -1,4 +1,4 @@
-#include "../library/commonUtils/input_task_1.h"
+#include "../library/commonUtils/ioInputInteger.h"
 #include <stdio.h>
 #include <stdlib.h>
 

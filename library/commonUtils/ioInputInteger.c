@@ -1,4 +1,4 @@
-#include "input_task_1.h"
+#include "ioInputInteger.h"
 #include <stdio.h>
 
 int integerInput(char nameOfVar)
