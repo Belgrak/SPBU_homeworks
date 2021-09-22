@@ -12,3 +12,5 @@ add_library(library ${SOURCE_LIB})
 add_executable(task1.1 homework1/task_1.c)
 target_link_libraries(task1.1 library)
 add_executable(task1.2 homework1/task_2.c)
+
+add_executable(task1.3 homework1/task_3.c)
