@@ -1,6 +1,7 @@
 #include "../library/commonUtils/linkedMap.h"
 #include <stdio.h>
 #include <stdlib.h>
+FILE* fileInput;
 
 void addingLinkedMapElements(LinkedMap* linkedMap)
 {
@@ -20,7 +21,7 @@ int main()
     char* srcName = calloc(255, sizeof(char));
     printf("Введите расположение входного файла формата [src].txt:");
     scanf("%s", srcName);
-    FILE* fileInput = fopen(srcName, "r");
+    fileInput = fopen(srcName, "r");
     if (fileInput == NULL) {
         printf("Error handed. Wrong src file path.");
         return 0;
@@ -37,6 +38,8 @@ int main()
     for (int i = 0; i < getSize(linkedMap); i++) {
         fprintf(fileOutput, "%s,%d\n", getKeyByIndex(linkedMap, i), get(linkedMap, getKeyByIndex(linkedMap, i)));
     }
+    fclose(fileInput);
+    fclose(fileOutput);
     free(srcName);
     free(dstName);
     return 0;
