@@ -6,100 +6,96 @@
 
 struct LinkedMap {
     LinkedMapElement* head;
-    LinkedMapElement* tail;
-    int LinkedMapSize;
+    int linkedMapSize;
 };
 
 struct LinkedMapElement {
     int data;
     LinkedMapElement* nextElement;
-    char key[128];
+    char* key;
 };
 
 LinkedMap* makeNewLinkedMap()
 {
-    LinkedMap* lst = malloc(sizeof(LinkedMap));
-    lst->head = NULL;
-    lst->tail = NULL;
-    lst->LinkedMapSize = 0;
-    return lst;
+    LinkedMap* map = malloc(sizeof(LinkedMap));
+    map->head = NULL;
+    map->linkedMapSize = 0;
+    return map;
 }
 
-LinkedMapElement* makeNewLinkedMapElement(const char key[128], int data)
+LinkedMapElement* makeNewLinkedMapElement(const char* key, int data)
 {
     LinkedMapElement* newElement = malloc(sizeof(LinkedMapElement));
-    strcpy(newElement->key, key);
+    newElement->key = strdup(key);
     newElement->data = data;
     newElement->nextElement = NULL;
     return newElement;
 }
 
-bool hasKey(LinkedMap* map, const char key[128])
+LinkedMapElement* getElement(LinkedMap* map, const char* key)
 {
-    int ind = 0;
-    LinkedMapElement* currElement = map->head;
-    while (ind < map->LinkedMapSize) {
-        if (strcmp(currElement->key, key) == 0)
-            return true;
-        currElement = currElement->nextElement;
-        ind++;
+    for (LinkedMapElement* currentElement = map->head; currentElement; currentElement = currentElement->nextElement) {
+        if (strcmp(currentElement->key, key) == 0)
+            return currentElement;
     }
-    return false;
+    return NULL;
 }
 
-LinkedMapElement* getElement(LinkedMap* map, const char key[128])
+bool hasKey(LinkedMap* map, const char* key)
 {
-    int ind = 0;
-    LinkedMapElement* currElement = map->head;
-    while (ind < map->LinkedMapSize) {
-        if (strcmp(currElement->key, key) == 0)
-            return currElement;
-        currElement = currElement->nextElement;
-        ind++;
-    }
-    return 0;
+    return getElement(map, key);
 }
 
-void put(LinkedMap* map, char key[128], int data)
+void put(LinkedMap* map, const char* key, int data)
 {
-    LinkedMapElement* newElement = makeNewLinkedMapElement(key, data);
-    if (map->LinkedMapSize == 0) {
+    if (map->linkedMapSize == 0) {
+        LinkedMapElement* newElement = makeNewLinkedMapElement(key, data);
         map->head = newElement;
-        map->tail = newElement;
-        map->LinkedMapSize++;
+        map->linkedMapSize++;
     } else {
         if (hasKey(map, key)) {
-            LinkedMapElement* currElement = getElement(map, key);
-            currElement->data = data;
+            LinkedMapElement* currentElement = getElement(map, key);
+            currentElement->data = data;
         } else {
-            map->LinkedMapSize++;
-            map->tail->nextElement = newElement;
-            map->tail = newElement;
+            LinkedMapElement* newElement = makeNewLinkedMapElement(key, data);
+            LinkedMapElement* tailElement = getElement(map, getKeyByIndex(map, map->linkedMapSize - 1));
+            tailElement->nextElement = newElement;
+            map->linkedMapSize++;
         }
     }
 }
 
-int get(LinkedMap* map, char key[128])
+int get(LinkedMap* map, const char* key, int defaultValue)
 {
     if (hasKey(map, key)) {
-        LinkedMapElement* currElement = getElement(map, key);
-        return currElement->data;
+        LinkedMapElement* currentElement = getElement(map, key);
+        return currentElement->data;
     }
-    return 0;
+    return defaultValue;
 }
 
-int getSize(LinkedMap* ls)
+int getSize(LinkedMap* map)
 {
-    return ls->LinkedMapSize;
+    return map->linkedMapSize;
 }
 
 char* getKeyByIndex(LinkedMap* map, int index)
 {
-    int ind = 0;
-    LinkedMapElement* currElement = map->head;
-    while (ind < index) {
-        currElement = currElement->nextElement;
-        ind++;
+    LinkedMapElement* currentElement = map->head;
+    for (int i = 0; i < index; i++)
+        currentElement = currentElement->nextElement;
+    return currentElement->key;
+}
+
+void freeLinkedMap(LinkedMap* map)
+{
+    LinkedMapElement* currentElement = map->head->nextElement;
+    for (int i = 0; i < map->linkedMapSize - 1; i++) {
+        free(map->head->key);
+        free(map->head);
+        map->head = currentElement;
+        currentElement = currentElement->nextElement;
     }
-    return currElement->key;
+    map->linkedMapSize = 0;
+    free(map);
 }

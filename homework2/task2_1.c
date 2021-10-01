@@ -1,46 +1,45 @@
 #include "../library/commonUtils/linkedMap.h"
 #include <stdio.h>
-#include <stdlib.h>
-FILE* fileInput;
+#define WRONG_LINKED_MAP_KEY -1
 
-void addingLinkedMapElements(LinkedMap* linkedMap)
+void readElementsFromFile(LinkedMap* linkedMap, FILE* fileInput)
 {
-    char* word = calloc(128, sizeof(char));
+    char word[128] = "";
     while (fscanf(fileInput, "%s", word) != EOF) {
         if (hasKey(linkedMap, word)) {
-            put(linkedMap, word, get(linkedMap, word) + 1);
+            put(linkedMap, word, get(linkedMap, word, WRONG_LINKED_MAP_KEY) + 1);
         } else {
             put(linkedMap, word, 1);
         }
     }
-    free(word);
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    char* srcName = calloc(255, sizeof(char));
-    printf("Введите расположение входного файла формата [src].txt:");
-    scanf("%s", srcName);
-    fileInput = fopen(srcName, "r");
+    if (argc > 3) {
+        printf("Error handed. Too much arguments.\n");
+        return 0;
+    }
+    if (argc < 3) {
+        printf("Error handed. You should enter <Program name> <Src file's path> <Dst file's path>\n");
+        return 0;
+    }
+    FILE* fileInput = fopen(argv[1], "r");
     if (fileInput == NULL) {
         printf("Error handed. Wrong src file path.");
         return 0;
     }
 
-    char* dstName = calloc(255, sizeof(char));
-    printf("Введите расположение файла для вывода формата [dst].csv:");
-    scanf("%s", dstName);
-    FILE* fileOutput = fopen(dstName, "w");
+    FILE* fileOutput = fopen(argv[2], "w");
 
     LinkedMap* linkedMap = makeNewLinkedMap();
-    addingLinkedMapElements(linkedMap);
+    readElementsFromFile(linkedMap, fileInput);
 
     for (int i = 0; i < getSize(linkedMap); i++) {
-        fprintf(fileOutput, "%s,%d\n", getKeyByIndex(linkedMap, i), get(linkedMap, getKeyByIndex(linkedMap, i)));
+        fprintf(fileOutput, "%s,%d\n", getKeyByIndex(linkedMap, i), get(linkedMap, getKeyByIndex(linkedMap, i), WRONG_LINKED_MAP_KEY));
     }
+    freeLinkedMap(linkedMap);
     fclose(fileInput);
     fclose(fileOutput);
-    free(srcName);
-    free(dstName);
     return 0;
 }
