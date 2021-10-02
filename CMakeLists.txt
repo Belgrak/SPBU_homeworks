@@ -6,6 +6,7 @@ set(CMAKE_C_STANDARD 11)
 set(SOURCE_LIB
     library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
+        library/commonUtils/linkedMap.c
 )
 add_library(library ${SOURCE_LIB})
 
@@ -16,3 +17,6 @@ add_executable(task1.3 homework1/task_3.c)
 add_executable(task1.4 homework1/task_4.c)
 target_link_libraries(task1.4 library)
 add_executable(task1.5 homework1/task_5.c)
+
+add_executable(task2.1 homework2/task2_1.c)
+target_link_libraries(task2.1 library)
