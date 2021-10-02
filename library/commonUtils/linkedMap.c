@@ -58,8 +58,8 @@ void put(LinkedMap* map, const char* key, int data)
             currentElement->data = data;
         } else {
             LinkedMapElement* newElement = makeNewLinkedMapElement(key, data);
-            LinkedMapElement* tailElement = getElement(map, getKeyByIndex(map, map->linkedMapSize - 1));
-            tailElement->nextElement = newElement;
+            newElement->nextElement = map->head;
+            map->head = newElement;
             map->linkedMapSize++;
         }
     }
@@ -67,11 +67,8 @@ void put(LinkedMap* map, const char* key, int data)
 
 int get(LinkedMap* map, const char* key, int defaultValue)
 {
-    if (hasKey(map, key)) {
-        LinkedMapElement* currentElement = getElement(map, key);
-        return currentElement->data;
-    }
-    return defaultValue;
+    LinkedMapElement* currentElement = getElement(map, key);
+    return currentElement ? currentElement->data : defaultValue;
 }
 
 int getSize(LinkedMap* map)
