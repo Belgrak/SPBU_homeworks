@@ -8,7 +8,7 @@ int main()
     int firstVectorSize = 0;
     printf("Введите кол-во элементов в первом векторе: ");
     scanf("%d", &firstVectorSize);
-    int* firstData = (int*)calloc(firstVectorSize, sizeof(int));
+    int* firstData = calloc(firstVectorSize, sizeof(int));
     for (int i = 0; i < firstVectorSize; i++) {
         printf("Введите число в вектор ");
         scanf("%d", &firstData[i]);
@@ -23,12 +23,15 @@ int main()
         printf("Введите число в вектор ");
         scanf("%d", &secondData[i]);
     }
-    //    Vector* secondVector = makeNewVector(secondData);
+    Vector* secondVector = makeNewVector(secondData);
 
-    //    printf("Скалярное произведение: %d", getScalarProduct(firstVector, secondVector, 0));
-    //    printf("Длина ветора 1: %d", getVectorLength(firstVector));
-    //    printf("Длина суммы векторов: %d", getVectorLength(vectorSummation(firstVector, secondVector)));
-    //    printf("Длина разности векторов: %d", getVectorLength(vectorSubtraction(firstVector, secondVector)));
+    printf("Скалярное произведение: %d", getScalarProduct(firstVector, secondVector, 0));
+    printf("Длина ветора 1: %d", getVectorLength(firstVector));
+    printf("Длина суммы векторов: %d", getVectorLength(vectorSummation(firstVector, secondVector)));
+    printf("Длина разности векторов: %d", getVectorLength(vectorSubtraction(firstVector, secondVector)));
+
+    vectorFree(firstVector);
+    vectorFree(secondVector);
 
     return 0;
 }

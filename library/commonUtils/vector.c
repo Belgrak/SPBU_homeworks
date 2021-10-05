@@ -1,6 +1,5 @@
 #include "vector.h"
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 struct Vector {
@@ -66,4 +65,9 @@ Vector* vectorSubtraction(Vector* firstVector, Vector* secondVector)
         return newVector;
     }
     return NULL;
+}
+
+void vectorFree(Vector* vector)
+{
+    free(vector->data);
 }

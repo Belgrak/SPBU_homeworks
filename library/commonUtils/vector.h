@@ -9,4 +9,6 @@ int getVectorLength(Vector* vector);
 Vector* vectorSummation(Vector* firstVector, Vector* secondVector);
 Vector* vectorSubtraction(Vector* firstVector, Vector* secondVector);
 
+void vectorFree(Vector* vector);
+
 #endif // SPBU_C_HOMEWORKS_VECTOR_H
