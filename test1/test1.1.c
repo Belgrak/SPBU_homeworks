@@ -23,12 +23,12 @@ int main()
         printf("Введите число в вектор ");
         scanf("%d", &secondData[i]);
     }
-//    Vector* secondVector = makeNewVector(secondData);
+    //    Vector* secondVector = makeNewVector(secondData);
 
-//    printf("Скалярное произведение: %d", getScalarProduct(firstVector, secondVector, 0));
-//    printf("Длина ветора 1: %d", getVectorLength(firstVector));
-//    printf("Длина суммы векторов: %d", getVectorLength(vectorSummation(firstVector, secondVector)));
-//    printf("Длина разности векторов: %d", getVectorLength(vectorSubtraction(firstVector, secondVector)));
+    //    printf("Скалярное произведение: %d", getScalarProduct(firstVector, secondVector, 0));
+    //    printf("Длина ветора 1: %d", getVectorLength(firstVector));
+    //    printf("Длина суммы векторов: %d", getVectorLength(vectorSummation(firstVector, secondVector)));
+    //    printf("Длина разности векторов: %d", getVectorLength(vectorSubtraction(firstVector, secondVector)));
 
     return 0;
 }

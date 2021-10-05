@@ -1,7 +1,7 @@
 #include "vector.h"
 #include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct Vector {
     int size;
