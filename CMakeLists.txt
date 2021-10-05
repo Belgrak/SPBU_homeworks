@@ -7,6 +7,7 @@ set(SOURCE_LIB
     library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
+        library/commonUtils/vector.c
 )
 add_library(library ${SOURCE_LIB})
 
@@ -20,3 +21,6 @@ add_executable(task1.5 homework1/task_5.c)
 
 add_executable(task2.1 homework2/task2_1.c)
 target_link_libraries(task2.1 library)
+
+add_executable(test1.1 test1/test1.1.c)
+target_link_libraries(test1.1 PRIVATE library m)
