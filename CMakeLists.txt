@@ -20,3 +20,6 @@ add_executable(task1.5 homework1/task_5.c)
 
 add_executable(task2.1 homework2/task2_1.c)
 target_link_libraries(task2.1 library)
+
+add_executable(task3.1 homework3/task3.1.c)
+target_link_libraries(task3.1 PRIVATE m)
