@@ -1,6 +1,5 @@
 #include "linkedList.h"
 #include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -32,7 +31,7 @@ LinkedListElement* makeNewLinkedListElement(const char* data)
     return newElement;
 }
 
-char* getDataByIndex(LinkedList* list, int index)
+char* getElementDataByIndex(LinkedList* list, int index)
 {
     LinkedListElement* current = list->head;
     for (int i = 0; i < index; i++)
@@ -40,7 +39,7 @@ char* getDataByIndex(LinkedList* list, int index)
     return current->data;
 }
 
-void putDna(struct LinkedList* list, const char* data)
+void putElement(struct LinkedList* list, const char* data)
 {
     LinkedListElement* newElement = makeNewLinkedListElement(data);
     if (list->linkedListSize == 0)

@@ -8,8 +8,8 @@ typedef struct LinkedListElement LinkedListElement;
 LinkedList* makeNewLinkedList();
 LinkedListElement* makeNewLinkedListElement(const char* data);
 
-char* getDataByIndex(LinkedList* list, int index);
-void putDna(struct LinkedList* list, const char* data);
+char* getElementDataByIndex(LinkedList* list, int index);
+void putElement(struct LinkedList* list, const char* data);
 int getSizeList(LinkedList* list);
 void freeLinkedList(LinkedList* list);
 
