@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define LOG_COMMAND_ERROR 1
+#define MEMORY_ERROR 2
 
 bool sliceArray(const char* array, int indexStart, int indexEnd, char** newArray)
 {
@@ -22,10 +23,14 @@ void delete (LinkedList* list, char start[128], char end[128], char* array, int*
     char* result = NULL;
     if (sliceArray(array, 0, indexStart, &result)) {
         char* endPart = NULL;
-        if (sliceArray(array, indexEndPlusOne, strlen(array), &endPart)) {
-            result = realloc(result, (strlen(result) + strlen(endPart) + 1) * sizeof(char));
+        char* temporaryPointer = realloc(result, (strlen(result) + strlen(endPart) + 1) * sizeof(char));
+        if (sliceArray(array, indexEndPlusOne, strlen(array), &endPart) && temporaryPointer) {
+            result = temporaryPointer;
             strcat(result, endPart);
-            putElement(list, result);
+            addElement(list, result);
+            free(endPart);
+        } else if (endPart) {
+            *error = MEMORY_ERROR;
             free(endPart);
         } else
             *error = LOG_COMMAND_ERROR;
@@ -38,17 +43,25 @@ void insert(LinkedList* list, char* start, char* fragment, char* array, int* err
 {
     int indexStartEnd = strstr(array, start) - array + strlen(start);
     char* result = NULL;
-    if (sliceArray(array, 0, indexStartEnd, &result)) {
-        result = realloc(result, (strlen(result) + strlen(fragment) + 1) * sizeof(char));
+    char* temporaryPointer = realloc(result, (strlen(result) + strlen(fragment) + 1) * sizeof(char));
+    if (sliceArray(array, 0, indexStartEnd, &result) && temporaryPointer) {
+        result = temporaryPointer;
         strcat(result, fragment);
         char* endPart = NULL;
-        if (sliceArray(array, indexStartEnd, strlen(array), &endPart)) {
-            result = realloc(result, (strlen(result) + strlen(endPart) + 1) * sizeof(char));
+        temporaryPointer = realloc(result, (strlen(result) + strlen(endPart) + 1) * sizeof(char));
+        if (sliceArray(array, indexStartEnd, strlen(array), &endPart) && temporaryPointer) {
+            result = temporaryPointer;
             strcat(result, endPart);
-            putElement(list, result);
+            addElement(list, result);
+            free(endPart);
+        } else if (endPart) {
+            *error = MEMORY_ERROR;
             free(endPart);
         } else
             *error = LOG_COMMAND_ERROR;
+        free(result);
+    } else if (result) {
+        *error = MEMORY_ERROR;
         free(result);
     } else
         *error = LOG_COMMAND_ERROR;
@@ -59,17 +72,25 @@ void replace(LinkedList* list, char* template, char* fragment, char* array, int*
     int indexStart = strstr(array, template) - array;
     int indexEndPlusOne = indexStart + strlen(template);
     char* result = NULL;
-    if (sliceArray(array, 0, indexStart, &result)) {
-        result = realloc(result, (strlen(result) + strlen(fragment) + 1) * sizeof(char));
+    char* temporaryPointer = realloc(result, (strlen(result) + strlen(fragment) + 1) * sizeof(char));
+    if (sliceArray(array, 0, indexStart, &result) && temporaryPointer) {
+        result = temporaryPointer;
         strcat(result, fragment);
         char* endPart = NULL;
-        if (sliceArray(array, indexEndPlusOne, strlen(array), &endPart)) {
-            result = realloc(result, (strlen(result) + strlen(endPart) + 1) * sizeof(char));
+        temporaryPointer = realloc(result, (strlen(result) + strlen(endPart) + 1) * sizeof(char));
+        if (sliceArray(array, indexEndPlusOne, strlen(array), &endPart) && temporaryPointer) {
+            result = temporaryPointer;
             strcat(result, endPart);
-            putElement(list, result);
+            addElement(list, result);
+            free(endPart);
+        } else if (endPart) {
+            *error = MEMORY_ERROR;
             free(endPart);
         } else
             *error = LOG_COMMAND_ERROR;
+        free(result);
+    } else if (result) {
+        *error = MEMORY_ERROR;
         free(result);
     } else
         *error = LOG_COMMAND_ERROR;
@@ -83,9 +104,11 @@ void readElementsFromFile(LinkedList* list, FILE* fileInput, int* error)
     char* originalArray = calloc(lengthOriginalArray + 1, sizeof(char));
     fscanf(fileInput, "%s", originalArray);
     fscanf(fileInput, "%d", &logsCount);
-    putElement(list, originalArray);
+    addElement(list, originalArray);
     free(originalArray);
-    char command[128] = "", firstArgument[128] = "", secondArgument[128] = "";
+    char command[128] = "";
+    char firstArgument[128] = "";
+    char secondArgument[128] = "";
     char* array = getElementDataByIndex(list, getSizeList(list) - 1);
     for (int i = 0; i < logsCount; i++) {
         if (*error)
@@ -99,7 +122,6 @@ void readElementsFromFile(LinkedList* list, FILE* fileInput, int* error)
             replace(list, firstArgument, secondArgument, array, error);
         array = getElementDataByIndex(list, getSizeList(list) - 1);
     }
-    free(array);
 }
 
 int main(int argc, char* argv[])
@@ -124,7 +146,17 @@ int main(int argc, char* argv[])
     int error = 0;
     readElementsFromFile(list, fileInput, &error);
     if (error) {
-        printf("Error handled. Error in a log command.");
+        switch (error) {
+        case 1:
+            printf("Error handled. Error in a log command.");
+            break;
+        case 2:
+            printf("Error handled. Not enough memory");
+            break;
+        }
+        freeLinkedList(list);
+        fclose(fileInput);
+        fclose(fileOutput);
         return 0;
     }
 

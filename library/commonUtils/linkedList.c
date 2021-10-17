@@ -39,7 +39,7 @@ char* getElementDataByIndex(LinkedList* list, int index)
     return current->data;
 }
 
-void putElement(struct LinkedList* list, const char* data)
+void addElement(struct LinkedList* list, const char* data)
 {
     LinkedListElement* newElement = makeNewLinkedListElement(data);
     if (list->linkedListSize == 0)
@@ -57,12 +57,12 @@ int getSizeList(LinkedList* list)
 
 void freeLinkedList(LinkedList* list)
 {
-    LinkedListElement* currentElement = list->head->nextElement;
-    for (int i = 0; i < list->linkedListSize - 1; i++) {
+    LinkedListElement* currentElement = list->head;
+    while (currentElement) {
+        currentElement = currentElement->nextElement;
         free(list->head->data);
         free(list->head);
         list->head = currentElement;
-        currentElement = currentElement->nextElement;
     }
     list->linkedListSize = 0;
     free(list);

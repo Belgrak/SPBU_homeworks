@@ -9,7 +9,7 @@ LinkedList* makeNewLinkedList();
 LinkedListElement* makeNewLinkedListElement(const char* data);
 
 char* getElementDataByIndex(LinkedList* list, int index);
-void putElement(struct LinkedList* list, const char* data);
+void addElement(struct LinkedList* list, const char* data);
 int getSizeList(LinkedList* list);
 void freeLinkedList(LinkedList* list);
 
