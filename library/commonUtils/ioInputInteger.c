@@ -4,7 +4,7 @@
 int integerInput(char nameOfVar)
 {
     int digit = 0;
-    printf("Ввелите целое число %c: ", nameOfVar);
+    printf("Ввелите число %c: ", nameOfVar);
     scanf("%d", &digit);
     return digit;
 }
