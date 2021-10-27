@@ -12,7 +12,7 @@ int binToDec(const int* binaryCode)
         if (binaryCode[i])
             number += (int)pow(2, SIGNED_BINARY_SIZE - i - 1);
     }
-    return (int)pow((-1), binaryCode[0]) * number;
+    return (binaryCode[0] == 1 ? -1 : 1) * number;
 }
 
 int* decToBin(int number)
@@ -21,24 +21,17 @@ int* decToBin(int number)
         int* binaryCode = calloc(SIGNED_BINARY_SIZE, sizeof(int));
         return binaryCode;
     }
-    int buffer[256] = {};
-    int index = 0;
-    buffer[255] = number < 0;
-    number = abs(number);
-    while (number > 0) {
-        buffer[index] = number % 2;
-        number /= 2;
-        index++;
-    }
     int* binaryCode = calloc(SIGNED_BINARY_SIZE, sizeof(int));
-    binaryCode[0] = buffer[255];
-    index--;
-    for (int i = SIGNED_BINARY_SIZE - 1 - index; index >= 0; index--, i++)
-        binaryCode[i] = buffer[index];
+    binaryCode[0] = number < 0;
+    number = abs(number);
+    for (int index = SIGNED_BINARY_SIZE - 1; number > 0; index--) {
+        binaryCode[index] = number % 2;
+        number /= 2;
+    }
     return binaryCode;
 }
 
-int* binToTwosComplement(int* binaryCode)
+int* binToBinsComplement(int* binaryCode)
 {
     if (!binaryCode[0])
         return binaryCode;
@@ -61,20 +54,14 @@ int* binSummation(const int* firstBin, const int* secondBin)
     bool plusOneNext = false;
     for (int i = SIGNED_BINARY_SIZE - 1, j = SIGNED_BINARY_SIZE - 1; i >= 0 || j >= 0; i--, j--) {
         int index = (int)fmax(i, j);
+        if (j >= 0)
+            summary[index] += secondBin[j];
+        if (i >= 0)
+            summary[index] += firstBin[i];
         if (plusOneNext) {
-            if (i < 0)
-                summary[index] = 1 + secondBin[j];
-            else if (j < 0)
-                summary[index] = 1 + firstBin[i];
-            else if (i >= 0 && j >= 0)
-                summary[index] = firstBin[i] + secondBin[j] + 1;
+            summary[index]++;
             plusOneNext = false;
-        } else if (i < 0)
-            summary[index] = secondBin[j];
-        else if (j < 0)
-            summary[index] = firstBin[i];
-        else if (i >= 0 && j >= 0)
-            summary[index] = firstBin[i] + secondBin[j];
+        }
         if (summary[index] >= 2)
             plusOneNext = true;
         summary[index] = summary[index] % 2;
@@ -82,7 +69,7 @@ int* binSummation(const int* firstBin, const int* secondBin)
     return summary;
 }
 
-int* twosComplementToBin(int* binaryCode)
+int* binsComplementToBin(int* binaryCode)
 {
     if (!binaryCode[0])
         return binaryCode;
@@ -97,19 +84,19 @@ int* twosComplementToBin(int* binaryCode)
     return binaryCode;
 }
 
-int* decToTwosComplement(int number)
+int* decToBinsComplement(int number)
 {
-    return binToTwosComplement(decToBin(number));
+    return binToBinsComplement(decToBin(number));
 }
 
 int* leftShift(int* binaryCode, int count)
 {
-    return decToTwosComplement(binToDec(twosComplementToBin(binaryCode)) << count);
+    return decToBinsComplement(binToDec(binsComplementToBin(binaryCode)) << count);
 }
 
 int* rightShift(int* binaryCode, int count)
 {
-    return decToTwosComplement(binToDec(twosComplementToBin(binaryCode)) >> count);
+    return decToBinsComplement(binToDec(binsComplementToBin(binaryCode)) >> count);
 }
 
 void binaryPrint(int* binaryCode, char* comment)

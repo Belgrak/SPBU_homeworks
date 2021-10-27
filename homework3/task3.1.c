@@ -8,10 +8,10 @@ int main()
     int firstNumber = integerInput('a');
     int secondNumber = integerInput('b');
 
-    int* firstBin = decToTwosComplement(firstNumber);
-    int* secondBin = decToTwosComplement(secondNumber);
+    int* firstBin = decToBinsComplement(firstNumber);
+    int* secondBin = decToBinsComplement(secondNumber);
     int* summaryComplement = binSummation(firstBin, secondBin);
-    int* summaryBin = twosComplementToBin(summaryComplement);
+    int* summaryBin = binsComplementToBin(summaryComplement);
 
     binaryPrint(firstBin, "First two's complement binary code: ");
     binaryPrint(secondBin, "Second two's complement binary code: ");
