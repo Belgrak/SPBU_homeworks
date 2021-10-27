@@ -8,9 +8,12 @@ int main()
     int firstNumber = integerInput('a');
     int secondNumber = integerInput('b');
 
-    int* firstBin = decToTwosComplement(abs(firstNumber));
-    int* secondBin = decToTwosComplement(abs(secondNumber));
+    int* firstBin = decToBinsComplement(firstNumber);
+    int* secondBin = decToBinsComplement(secondNumber);
 
-    printf("Multiplication result: %d", multiply(firstBin, secondBin, ((firstNumber < 0) + (secondNumber < 0)) % 2));
+    printf("Multiplication result: %d", multiply(firstBin, secondBin));
+
+    free(firstBin);
+    free(secondBin);
     return 0;
 }
