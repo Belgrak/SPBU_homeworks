@@ -1,27 +1,24 @@
 #include "binary.h"
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #define SIGNED_BINARY_SIZE 33
 
-int binToDec(const int* binaryCode)
+int binToDec(bin binaryCode)
 {
     int number = 0;
-    for (int i = 1; i < SIGNED_BINARY_SIZE; i++) {
+    int temporary = 1;
+    for (int i = SIGNED_BINARY_SIZE - 1; i > 0; i--) {
+        temporary *= i == SIGNED_BINARY_SIZE - 1 ? 1 : 2;
         if (binaryCode[i])
-            number += (int)pow(2, SIGNED_BINARY_SIZE - i - 1);
+            number += temporary;
     }
     return (binaryCode[0] == 1 ? -1 : 1) * number;
 }
 
-int* decToBin(int number)
+bin decToBin(int number)
 {
-    if (abs(number) == 0) {
-        int* binaryCode = calloc(SIGNED_BINARY_SIZE, sizeof(int));
-        return binaryCode;
-    }
-    int* binaryCode = calloc(SIGNED_BINARY_SIZE, sizeof(int));
+    bin binaryCode = calloc(SIGNED_BINARY_SIZE, sizeof(int));
     binaryCode[0] = number < 0;
     number = abs(number);
     for (int index = SIGNED_BINARY_SIZE - 1; number > 0; index--) {
@@ -31,7 +28,7 @@ int* decToBin(int number)
     return binaryCode;
 }
 
-int* binToBinsComplement(int* binaryCode)
+bin binToBinsComplement(bin binaryCode)
 {
     if (!binaryCode[0])
         return binaryCode;
@@ -48,28 +45,19 @@ int* binToBinsComplement(int* binaryCode)
     return binaryCode;
 }
 
-int* binSummation(const int* firstBin, const int* secondBin)
+bin binSummation(bin firstBin, bin secondBin)
 {
-    int* summary = calloc(SIGNED_BINARY_SIZE, sizeof(int));
+    bin summary = calloc(SIGNED_BINARY_SIZE, sizeof(int));
     bool plusOneNext = false;
-    for (int i = SIGNED_BINARY_SIZE - 1, j = SIGNED_BINARY_SIZE - 1; i >= 0 || j >= 0; i--, j--) {
-        int index = (int)fmax(i, j);
-        if (j >= 0)
-            summary[index] += secondBin[j];
-        if (i >= 0)
-            summary[index] += firstBin[i];
-        if (plusOneNext) {
-            summary[index]++;
-            plusOneNext = false;
-        }
-        if (summary[index] >= 2)
-            plusOneNext = true;
-        summary[index] = summary[index] % 2;
+    for (int i = SIGNED_BINARY_SIZE - 1; i >= 0; i--) {
+        summary[i] = firstBin[i] + secondBin[i] + 1 * plusOneNext;
+        plusOneNext = summary[i] / 2 == 1;
+        summary[i] %= 2;
     }
     return summary;
 }
 
-int* binsComplementToBin(int* binaryCode)
+bin binsComplementToBin(bin binaryCode)
 {
     if (!binaryCode[0])
         return binaryCode;
@@ -84,22 +72,12 @@ int* binsComplementToBin(int* binaryCode)
     return binaryCode;
 }
 
-int* decToBinsComplement(int number)
+bin decToBinsComplement(int number)
 {
     return binToBinsComplement(decToBin(number));
 }
 
-int* leftShift(int* binaryCode, int count)
-{
-    return decToBinsComplement(binToDec(binsComplementToBin(binaryCode)) << count);
-}
-
-int* rightShift(int* binaryCode, int count)
-{
-    return decToBinsComplement(binToDec(binsComplementToBin(binaryCode)) >> count);
-}
-
-void binaryPrint(int* binaryCode, char* comment)
+void binaryPrint(bin binaryCode, char* comment)
 {
     printf("%s", comment);
     for (int i = 0; i < SIGNED_BINARY_SIZE; i++)

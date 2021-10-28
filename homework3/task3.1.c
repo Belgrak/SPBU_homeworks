@@ -5,8 +5,8 @@
 
 int main()
 {
-    int firstNumber = integerInput('a');
-    int secondNumber = integerInput('b');
+    int firstNumber = integerInput('A');
+    int secondNumber = integerInput('B');
 
     int* firstBin = decToBinsComplement(firstNumber);
     int* secondBin = decToBinsComplement(secondNumber);
