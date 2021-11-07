@@ -10,5 +10,7 @@ bin binSummation(bin firstBin, bin secondBin);
 bin binsComplementToBin(bin binaryCode);
 bin decToBinsComplement(int number);
 void binaryPrint(bin binaryCode, char* comment);
+bin leftShift(bin binaryCode, int count);
+int multiply(bin firstBin, bin secondBin);
 
 #endif // SPBU_C_HOMEWORKS_BINARY_H

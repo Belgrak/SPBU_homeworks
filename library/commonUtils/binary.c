@@ -77,6 +77,41 @@ bin decToBinsComplement(int number)
     return binToBinsComplement(decToBin(number));
 }
 
+bin leftShift(bin binaryCode, int count)
+{
+    for (int i = 0, j = count; i < SIGNED_BINARY_SIZE; i++, j++) {
+        if (j >= SIGNED_BINARY_SIZE)
+            binaryCode[i] = 0;
+        else
+            binaryCode[i] = binaryCode[j];
+    }
+    return binaryCode;
+}
+
+int multiply(bin firstBin, bin secondBin)
+{
+    binaryPrint(firstBin, "First binary complement code: ");
+    binaryPrint(secondBin, "Second binary complement code: ");
+    firstBin[0] = 0;
+    secondBin[0] = 0;
+    bin multiplicationBinary = calloc(SIGNED_BINARY_SIZE, sizeof(int));
+    bin temporary = NULL;
+    int shiftCount = 0;
+    for (int i = SIGNED_BINARY_SIZE - 1; i >= 0; i--) {
+        if (secondBin[i] == 1) {
+            temporary = multiplicationBinary;
+            multiplicationBinary = binSummation(temporary, leftShift(firstBin, shiftCount));
+            free(temporary);
+            shiftCount = 0;
+        }
+        shiftCount++;
+    }
+    binaryPrint(multiplicationBinary, "Multiplication binary complement code: ");
+    int multiplication = binToDec(binsComplementToBin(multiplicationBinary));
+    free(multiplicationBinary);
+    return multiplication;
+}
+
 void binaryPrint(bin binaryCode, char* comment)
 {
     printf("%s", comment);
