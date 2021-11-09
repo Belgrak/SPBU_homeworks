@@ -4,11 +4,19 @@ project(spbu_c_homeworks C)
 set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_LIB
-    library/commonUtils/numericOperations.c
+        library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
-)
+        library/commonUtils/values.c
+        library/commonUtils/treeMap.c
+        )
 add_library(library ${SOURCE_LIB})
+
+set(S
+        library/commonUtils/values.c
+        library/commonUtils/treeMap.c
+        )
+add_library(treeMap ${S})
 
 add_executable(task1.1 homework1/task_1.c)
 target_link_libraries(task1.1 library)
@@ -20,3 +28,6 @@ add_executable(task1.5 homework1/task_5.c)
 
 add_executable(task2.1 homework2/task2_1.c)
 target_link_libraries(task2.1 library)
+
+add_executable(task5.1 homework5/task5.1.c)
+target_link_libraries(task5.1 treeMap m)
