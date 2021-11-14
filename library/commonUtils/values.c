@@ -1,6 +1,7 @@
 #include "values.h"
 
 #include <assert.h>
+#include <stdint.h>
 #include <string.h>
 
 void assertCommonType(Value first, Value second)

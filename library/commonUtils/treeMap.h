@@ -84,7 +84,7 @@ Value getValue(TreeMapIterator* iterator);
  * Если такого элемента не существует, то считайте, что
  * итератор указывает на NULL.
  */
-void next(TreeMapIterator* iterator, bool rightDirection);
+void next(TreeMapIterator* iterator);
 
 /**
  * Метод hasElement проверяет, что итератор сейчас

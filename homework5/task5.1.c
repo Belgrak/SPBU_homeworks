@@ -18,7 +18,7 @@ void getSizeCount(TreeMap* map, char firstOption[20], FILE* fileOutput)
     fprintf(fileOutput, "%d\n", get(map, wrapInt(atoi(firstOption))).intValue);
 }
 
-void select(TreeMap* map, char firstOption[20], FILE* fileOutput)
+void selectElement(TreeMap* map, char firstOption[20], FILE* fileOutput)
 {
     Value size = getLowerBound(map, wrapInt(atoi(firstOption)));
     Pair* pair = NULL;
@@ -29,6 +29,8 @@ void select(TreeMap* map, char firstOption[20], FILE* fileOutput)
         else
             put(map, size, wrapInt(get(map, size).intValue - 1));
     }
+    if (pair)
+        free(pair);
 }
 
 void readElementsFromFile(TreeMap* map, FILE* fileInput, FILE* fileOutput)
@@ -47,8 +49,18 @@ void readElementsFromFile(TreeMap* map, FILE* fileInput, FILE* fileOutput)
         if (strcmp(command, "GET") == 0)
             getSizeCount(map, firstOption, fileOutput);
         if (strcmp(command, "SELECT") == 0)
-            select(map, firstOption, fileOutput);
+            selectElement(map, firstOption, fileOutput);
     }
+}
+
+void fprintBalance(TreeMap* map, FILE* fileOutput)
+{
+    TreeMapIterator* iterator = getIterator(map);
+    while (hasElement(iterator)) {
+        fprintf(fileOutput, "%d %d\n", getKey(iterator).intValue, getValue(iterator).intValue);
+        next(iterator);
+    }
+    free(iterator);
 }
 
 int main()
@@ -58,11 +70,14 @@ int main()
         printf("Error handled. Wrong src file path.");
         return 0;
     }
-    FILE* fileOutput = fopen("../shop_res.txt", "w");
+    FILE* resultFileOutput = fopen("../shop_res.txt", "w");
+    FILE* balanceFileOutput = fopen("../shop_balance.txt", "w");
     TreeMap* map = createTreeMap(&compare);
-    readElementsFromFile(map, fileInput, fileOutput);
+    readElementsFromFile(map, fileInput, resultFileOutput);
+    fprintBalance(map, balanceFileOutput);
     deleteTreeMap(map);
     fclose(fileInput);
-    fclose(fileOutput);
+    fclose(resultFileOutput);
+    fclose(balanceFileOutput);
     return 0;
 }

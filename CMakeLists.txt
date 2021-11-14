@@ -12,11 +12,11 @@ set(SOURCE_LIB
         )
 add_library(library ${SOURCE_LIB})
 
-set(S
+set(TREE_LIB
         library/commonUtils/values.c
         library/commonUtils/treeMap.c
         )
-add_library(treeMap ${S})
+add_library(treeMap ${TREE_LIB})
 
 add_executable(task1.1 homework1/task_1.c)
 target_link_libraries(task1.1 library)

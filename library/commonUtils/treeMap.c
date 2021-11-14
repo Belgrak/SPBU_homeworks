@@ -26,6 +26,7 @@ typedef struct Node {
 
 struct TreeMapIterator {
     Node* current;
+    TreeMap* map;
 };
 
 struct AVLTree {
@@ -89,33 +90,6 @@ Node* balance(Node* root)
     return root;
 }
 
-TreeMapIterator* getIterator(TreeMap* map)
-{
-    TreeMapIterator* iterator = malloc(sizeof(TreeMapIterator));
-    iterator->current = map->root;
-    return iterator;
-}
-
-void next(TreeMapIterator* iterator, bool rightDirection)
-{
-    iterator->current = iterator->current ? (rightDirection ? iterator->current->rightChild : iterator->current->leftChild) : NULL;
-}
-
-Value getKey(TreeMapIterator* iterator)
-{
-    return iterator->current->key;
-}
-
-Value getValue(TreeMapIterator* iterator)
-{
-    return iterator->current->value;
-}
-
-bool hasElement(TreeMapIterator* iterator)
-{
-    return iterator->current;
-}
-
 Node* createNewNode(Value value, Value key)
 {
     Node* node = malloc(sizeof(Node));
@@ -137,12 +111,10 @@ TreeMap* createTreeMap(Comparator comparator)
 
 void freeNode(Node* node, Node* replacedNode)
 {
-    if (node->leftChild && node->leftChild != replacedNode) {
+    if (node->leftChild && node->leftChild != replacedNode)
         freeNode(node->leftChild, replacedNode);
-    }
-    if (node->rightChild && node->rightChild != replacedNode) {
+    if (node->rightChild && node->rightChild != replacedNode)
         freeNode(node->rightChild, replacedNode);
-    }
     free(node);
 }
 
@@ -204,7 +176,7 @@ Node* removeMin(Node* node)
 Node* deleteNode(Node* root, Value key, Comparator comparator)
 {
     if (!root)
-        return 0;
+        return NULL;
     if (comparator(root->key, key) > 0)
         root->leftChild = deleteNode(root->leftChild, key, comparator);
     else if (comparator(root->key, key) < 0)
@@ -237,18 +209,24 @@ Pair* removeKey(TreeMap* map, Value key)
     return pair;
 }
 
-Value get(TreeMap* map, Value key)
+Node* getNode(TreeMap* map, Value key)
 {
     Node* current = map->root;
     while (current) {
         if (map->comparator(current->key, key) == 0)
-            return current->value;
+            return current;
         if (map->comparator(current->key, key) > 0)
             current = current->leftChild;
         else
             current = current->rightChild;
     }
-    return wrapNone();
+    return NULL;
+}
+
+Value get(TreeMap* map, Value key)
+{
+    Node* current = getNode(map, key);
+    return current ? current->value : wrapNone();
 }
 
 bool hasKey(TreeMap* map, Value key)
@@ -282,4 +260,33 @@ Value getLowerBound(TreeMap* map, Value key)
     if (hasKey(map, key))
         return key;
     return getUpperBound(map, key);
+}
+
+TreeMapIterator* getIterator(TreeMap* map)
+{
+    TreeMapIterator* iterator = malloc(sizeof(TreeMapIterator));
+    iterator->map = map;
+    iterator->current = getMin(map->root);
+    return iterator;
+}
+
+bool hasElement(TreeMapIterator* iterator)
+{
+    return iterator->current;
+}
+
+void next(TreeMapIterator* iterator)
+{
+    Value key = getUpperBound(iterator->map, iterator->current->key);
+    iterator->current = isNone(key) ? NULL : getNode(iterator->map, key);
+}
+
+Value getKey(TreeMapIterator* iterator)
+{
+    return hasElement(iterator) ? iterator->current->key : wrapNone();
+}
+
+Value getValue(TreeMapIterator* iterator)
+{
+    return hasElement(iterator) ? iterator->current->value : wrapNone();
 }
