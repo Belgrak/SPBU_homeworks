@@ -15,15 +15,14 @@ void add(TreeMap* map, char firstOption[20], char secondOption[20])
 
 void getSizeCount(TreeMap* map, char firstOption[20], FILE* fileOutput)
 {
-    fprintf(fileOutput, "%d", get(map, wrapInt(atoi(firstOption))).intValue);
-    printf("%d\n", get(map, wrapInt(atoi(firstOption))).intValue);
+    fprintf(fileOutput, "%d\n", get(map, wrapInt(atoi(firstOption))).intValue);
 }
 
 void select(TreeMap* map, char firstOption[20], FILE* fileOutput)
 {
     Value size = getLowerBound(map, wrapInt(atoi(firstOption)));
     Pair* pair = NULL;
-    printf(isNone(size) ? "SORRY\n" : "%d\n", isNone(size) ?: size.intValue);
+    fprintf(fileOutput, isNone(size) ? "SORRY\n" : "%d\n", isNone(size) ?: size.intValue);
     if (!isNone(size)) {
         if (get(map, size).intValue - 1 == 0)
             pair = removeKey(map, size);
@@ -63,5 +62,7 @@ int main()
     TreeMap* map = createTreeMap(&compare);
     readElementsFromFile(map, fileInput, fileOutput);
     deleteTreeMap(map);
+    fclose(fileInput);
+    fclose(fileOutput);
     return 0;
 }

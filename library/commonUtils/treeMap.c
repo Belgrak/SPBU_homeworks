@@ -35,7 +35,7 @@ struct AVLTree {
 
 int getHeight(Node* node)
 {
-    return node == NULL ? 0 : node->height;
+    return node ? node->height : 0;
 }
 
 int getBalanceFactor(Node* node)
@@ -46,10 +46,6 @@ int getBalanceFactor(Node* node)
 void updateHeight(Node* node)
 {
     if (node) {
-        if (node->leftChild)
-            updateHeight(node->leftChild);
-        if (node->rightChild)
-            updateHeight(node->rightChild);
         int heightLeft = getHeight(node->leftChild);
         int heightRight = getHeight(node->rightChild);
         node->height = fmax(heightLeft, heightRight) + 1;
@@ -78,15 +74,17 @@ Node* rotateLeft(Node* root)
 
 Node* balance(Node* root)
 {
-    if (getBalanceFactor(root) == 2) {
-        if (getBalanceFactor(root->rightChild) == -1)
-            root->rightChild = rotateRight(root->rightChild);
-        return rotateLeft(root);
-    }
-    if (getBalanceFactor(root) == -2) {
-        if (getBalanceFactor(root->leftChild) == 1)
-            root->leftChild = rotateLeft(root->leftChild);
-        return rotateRight(root);
+    if (root) {
+        if (getBalanceFactor(root) == 2) {
+            if (getBalanceFactor(root->rightChild) == -1)
+                root->rightChild = rotateRight(root->rightChild);
+            return rotateLeft(root);
+        }
+        if (getBalanceFactor(root) == -2) {
+            if (getBalanceFactor(root->leftChild) == 1)
+                root->leftChild = rotateLeft(root->leftChild);
+            return rotateRight(root);
+        }
     }
     return root;
 }
@@ -165,6 +163,7 @@ Node* insert(Node* node, Value key, Value value, Comparator comparator)
         node->rightChild = insert(node->rightChild, key, value, comparator);
     else
         node->value = value;
+    updateHeight(node);
     return balance(node);
 }
 
@@ -176,8 +175,6 @@ void put(TreeMap* map, Value key, Value value)
 
 Node* getMax(Node* node)
 {
-    if (!node->rightChild)
-        return node;
     return node->rightChild ? getMax(node->rightChild) : node;
 }
 
@@ -188,8 +185,6 @@ Value getMaximum(TreeMap* map)
 
 Node* getMin(Node* node)
 {
-    if (!node->leftChild)
-        return node;
     return node->leftChild ? getMin(node->leftChild) : node;
 }
 
@@ -198,33 +193,36 @@ Value getMinimum(TreeMap* map)
     return getMin(map->root)->key;
 }
 
-bool deleteNode(Node** nodeLink, Value key, Comparator comparator)
+Node* removeMin(Node* node)
 {
-    Node* current = *nodeLink;
-    while (*nodeLink) {
-        if (comparator(current->key, key) == 0)
-            break;
-        if (comparator(current->key, key) > 0)
-            nodeLink = &current->leftChild;
-        else
-            nodeLink = &current->rightChild;
-        current = *nodeLink;
-    }
+    if (!node->leftChild)
+        return node->rightChild;
+    node->leftChild = removeMin(node->leftChild);
+    return balance(node);
+}
 
-    if (!current)
-        return false;
-    *nodeLink = balance(current);
-    if (!(current->rightChild && current->leftChild)) {
-        *nodeLink = current->rightChild ? current->rightChild : current->leftChild;
-        freeNode(current, *nodeLink);
-        return true;
+Node* deleteNode(Node* root, Value key, Comparator comparator)
+{
+    if (!root)
+        return 0;
+    if (comparator(root->key, key) > 0)
+        root->leftChild = deleteNode(root->leftChild, key, comparator);
+    else if (comparator(root->key, key) < 0)
+        root->rightChild = deleteNode(root->rightChild, key, comparator);
+    else {
+        Node* left = root->leftChild;
+        Node* right = root->rightChild;
+        root->leftChild = NULL;
+        root->rightChild = NULL;
+        freeNode(root, NULL);
+        if (!right)
+            return left;
+        Node* newRoot = getMin(right);
+        newRoot->rightChild = removeMin(right);
+        newRoot->leftChild = left;
+        return balance(newRoot);
     }
-
-    Node* leftMax = getMax(current->leftChild);
-    current->key = leftMax->key;
-    current->value = leftMax->value;
-    deleteNode(&current->leftChild, leftMax->key, comparator);
-    return true;
+    return balance(root);
 }
 
 Pair* removeKey(TreeMap* map, Value key)
@@ -234,9 +232,8 @@ Pair* removeKey(TreeMap* map, Value key)
         return pair;
     pair->key = key;
     pair->value = get(map, key);
-    bool result = deleteNode(&map->root, key, map->comparator);
-    if (result)
-        updateHeight(map->root);
+    map->root = deleteNode(map->root, key, map->comparator);
+    updateHeight(map->root);
     return pair;
 }
 
