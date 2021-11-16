@@ -27,3 +27,5 @@ target_link_libraries(task3.1 library m)
 add_executable(task3.2 homework3/task3_2.c)
 add_executable(task3.3 homework3/task3_3.c)
 target_link_libraries(task3.3 library)
+
+add_executable(test2.3 test2/test2.3.c)
