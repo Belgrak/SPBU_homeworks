@@ -14,6 +14,11 @@ long long fib(int n)
 
 int main()
 {
-    printf("Your Fibonacci number is %lld", fib(integerInput('n')));
+    int number = integerInput('n');
+    if (number > 90) {
+        printf("Error handled. Wrong number.");
+        return 0;
+    }
+    printf("Your Fibonacci number is %lld", fib(number));
     return 0;
 }
