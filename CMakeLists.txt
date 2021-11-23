@@ -11,6 +11,13 @@ set(SOURCE_LIB
 )
 add_library(library ${SOURCE_LIB})
 
+set(TREE_LIB
+        library/commonUtils/values.c
+        library/commonUtils/treeMap.c
+        library/commonUtils/linkedList.c
+        )
+add_library(treeMap ${TREE_LIB})
+
 add_executable(task1.1 homework1/task_1.c)
 target_link_libraries(task1.1 library)
 add_executable(task1.2 homework1/task_2.c)
@@ -27,6 +34,9 @@ target_link_libraries(task3.1 library m)
 add_executable(task3.2 homework3/task3_2.c)
 add_executable(task3.3 homework3/task3_3.c)
 target_link_libraries(task3.3 library)
+
+add_executable(task5.2 homework5/task5.2.c)
+target_link_libraries(task5.2 treeMap m)
 
 add_executable(test2.1 test2/test2.1.c)
 target_link_libraries(test2.1 library)
