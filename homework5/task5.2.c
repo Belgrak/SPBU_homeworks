@@ -13,19 +13,18 @@ void create(TreeMap* map, char street[20], char house[20], char building[20], ch
 {
     Value houseValue = get(map, wrapString(street));
     TreeMap* houseMap = houseValue.pointerValue;
+    TreeMap* buildingMap = NULL;
     if (!houseMap){
         houseMap = createTreeMap(&compare);
-        TreeMap* buildingMap = createTreeMap(&compare);
-        put(buildingMap, wrapInt(atoi(building)), wrapInt(atoi(index)));
-        put(houseMap, wrapInt(atoi(house)), wrapPointer(buildingMap));
+        buildingMap = createTreeMap(&compare);
     } else {
         Value buildingValue = get(houseMap, wrapInt(atoi(house)));
-        TreeMap* buildingMap = buildingValue.pointerValue;
+        buildingMap = buildingValue.pointerValue;
         if (!buildingMap)
             buildingMap = createTreeMap(&compare);
-        put(buildingMap, wrapInt(atoi(building)), wrapInt(atoi(index)));
-        put(houseMap, wrapInt(atoi(house)), wrapPointer(buildingMap));
     }
+    put(buildingMap, wrapInt(atoi(building)), wrapInt(atoi(index)));
+    put(houseMap, wrapInt(atoi(house)), wrapPointer(buildingMap));
     put(map, wrapString(street), wrapPointer(houseMap));
 
 }
@@ -43,7 +42,7 @@ void getIndex(TreeMap* map, char street[20], char house[20], char building[20])
         return;
     }
     Value indexValue = get(buildingValue.pointerValue, wrapInt(atoi(building)));
-    if (isNone(buildingValue)) {
+    if (isNone(indexValue)) {
         printf("None\n");
         return;
     }
@@ -77,28 +76,34 @@ void readElementsFromFile(TreeMap* map, FILE* fileInput, FILE* fileOutput)
     char fifthOption[20] = "";
     char sixthOption[20] = "";
     for (int i = 0; i < logsCount; i++) {
-        fscanf(fileInput, "%s %s %s", command, firstOption, secondOption);
+        fscanf(fileInput, "%s %s", command, firstOption);
         if (strcmp(command, "CREATE") == 0) {
-            fscanf(fileInput, "%s %s", thirdOption, fourthOption);
-//            printf("%s %s %s %s %s\n", command, firstOption, secondOption, thirdOption, fourthOption);
-            create(map, firstOption, secondOption, thirdOption, fourthOption);
+            fscanf(fileInput, "%s %s %s", secondOption, thirdOption, fourthOption);
+            printf("%s %s %s %s %s\n", command, firstOption, secondOption, thirdOption, fourthOption);
+//            create(map, firstOption, secondOption, thirdOption, fourthOption);
         }
         if (strcmp(command, "GET") == 0) {
-            fscanf(fileInput, "%s", thirdOption);
-//            printf("%s %s %s %s\n", command, firstOption, secondOption, thirdOption);
-            getIndex(map, firstOption, secondOption, thirdOption);
+            fscanf(fileInput, "%s %s", secondOption, thirdOption);
+            printf("%s %s %s %s\n", command, firstOption, secondOption, thirdOption);
+//            getIndex(map, firstOption, secondOption, thirdOption);
         }
-//        if (strcmp(command, "RENAME") == 0)
-//            printf("%s %s %s\n", command, firstOption, secondOption);
+        if (strcmp(command, "RENAME") == 0) {
+            fscanf(fileInput, "%s", secondOption);
+            printf("%s %s %s\n", command, firstOption, secondOption);
+        }
         if (strcmp(command, "DELETE_BLOCK") == 0) {
-            fscanf(fileInput, "%s", thirdOption);
-//            printf("%s %s %s %s\n", command, firstOption, secondOption, thirdOption);
+            fscanf(fileInput, "%s %s", secondOption, thirdOption);
+            printf("%s %s %s %s\n", command, firstOption, secondOption, thirdOption);
         }
-//        if (strcmp(command, "DELETE_HOUSE") == 0)
-//            printf("%s %s %s\n", command, firstOption, secondOption);
+        if (strcmp(command, "DELETE_HOUSE") == 0) {
+            fscanf(fileInput, "%s", secondOption);
+            printf("%s %s %s\n", command, firstOption, secondOption);
+        }
+        if (strcmp(command, "DELETE_STREET") == 0)
+            printf("%s %s\n", command, firstOption);
         if (strcmp(command, "LIST") == 0) {
-            fscanf(fileInput, "%s %s %s %s", thirdOption, fourthOption, fifthOption, sixthOption);
-//            printf("%s %s %s %s %s %s %s\n", command, firstOption, secondOption, thirdOption, fourthOption, fifthOption, sixthOption);
+            fscanf(fileInput, "%s %s %s %s %s", secondOption, thirdOption, fourthOption, fifthOption, sixthOption);
+            printf("%s %s %s %s %s %s %s\n", command, firstOption, secondOption, thirdOption, fourthOption, fifthOption, sixthOption);
         }
     }
 }
