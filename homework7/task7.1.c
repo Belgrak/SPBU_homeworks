@@ -3,7 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void Dijkstra(int** matrix, int fromVertex, int toVertex, int nVertex)
+void freeMatrix(int** matrix, int nVertex)
+{
+    for (int i = 0; i < nVertex; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+}
+
+void dijkstra(int** matrix, int fromVertex, int toVertex, int nVertex)
 {
     int* minValue = calloc(nVertex, sizeof(int));
     bool* used = calloc(nVertex, sizeof(bool));
@@ -15,9 +23,8 @@ void Dijkstra(int** matrix, int fromVertex, int toVertex, int nVertex)
     for (int i = 0; !used[toVertex]; i++) {
         i %= nVertex;
         if (!used[i] && minValue[i] < INT_MAX) {
-            for (int j = 0; j < nVertex; j++) {
+            for (int j = 0; j < nVertex; j++)
                 minValue[j] = matrix[i][j] > 0 && matrix[i][j] + minValue[i] < minValue[j] ? matrix[i][j] + minValue[i] : minValue[j];
-            }
             used[i] = true;
         }
     }
@@ -38,6 +45,9 @@ void Dijkstra(int** matrix, int fromVertex, int toVertex, int nVertex)
     printf("%d %d\n", index / 2, minValue[toVertex]);
     for (; index > -1; index--)
         printf("%c", route[index]);
+    free(minValue);
+    free(used);
+    free(route);
 }
 
 int main()
@@ -47,6 +57,7 @@ int main()
     int fromVertex = 0;
     int toVertex = 0;
     int weight = 0;
+    printf("Please enter: ");
     scanf("%d %d", &nVertex, &nEdges);
     int** matrix = calloc(nVertex, nVertex * sizeof(int*));
     for (int i = 0; i < nVertex; i++)
@@ -60,6 +71,7 @@ int main()
         matrix[fromVertex][toVertex] = weight;
         matrix[toVertex][fromVertex] = (-1) * matrix[fromVertex][toVertex];
     }
-    Dijkstra(matrix, fromVertex, toVertex, nVertex);
+    dijkstra(matrix, fromVertex, toVertex, nVertex);
+    freeMatrix(matrix, nVertex);
     return 0;
 }
