@@ -8,6 +8,9 @@ set(SOURCE_LIB
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
         library/commonUtils/binary.c
+        library/commonUtils/values.c
+        library/commonUtils/hashMap.c
+        library/commonUtils/linkedList.c
 )
 add_library(library ${SOURCE_LIB})
 
