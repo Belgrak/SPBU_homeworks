@@ -35,3 +35,6 @@ add_executable(test2.1 test2/test2.1.c)
 target_link_libraries(test2.1 library)
 
 add_executable(test2.2 test2/test2.2.c)
+
+add_executable(task6.1 homework6/task6.1.c)
+target_link_libraries(task6.1 library)

@@ -3,19 +3,34 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define HASH_TABLE_START_SIZE 256
 #define HASH_POLYNOMIAL_PARAMETER 239
 
-struct HashMap
+struct Pair {
+    Value key;
+    Value value;
+};
+
+Pair* createPair()
 {
-    List** bucket;
+    Pair* pair = malloc(sizeof(Pair));
+    pair->key = wrapNone();
+    pair->value = wrapNone();
+    return pair;
+}
+
+struct HashMap {
+    List** buckets;
+    List** nextBuckets;
+    int nextBucketsIndex;
     int mode;
     HashFunction function;
     int nBuckets;
+    int elementsCount;
 };
 
-uint32_t hashFunction(Value value){
-    targetString = getString(value);
+uint32_t hashFunction(Value value, int nBuckets)
+{
+    char* targetString = getString(value);
     size_t length = strlen(targetString);
     int hashResult = 0;
 
@@ -28,15 +43,16 @@ uint32_t hashFunction(Value value){
     return hashResult;
 }
 
-HashMap* createHashMap(HashFunction hashFunction)
+HashMap* createHashMap(HashFunction hashFunction, int size)
 {
     HashMap* table = malloc(sizeof(HashMap));
-    table->nBuckets = HASH_TABLE_START_SIZE;
+    table->nBuckets = size;
     table->mode = 0;
+    table->elementsCount = 0;
     table->function = hashFunction;
-    table->bucket = malloc(sizeof(List*) * table->nBuckets);
+    table->buckets = malloc(sizeof(List*) * table->nBuckets);
     for (int i = 0; i < table->nBuckets; i++)
-        table->bucket[i] = makeNewLinkedList();
+        table->buckets[i] = makeNewLinkedList();
 
     return table;
 }
@@ -44,59 +60,83 @@ HashMap* createHashMap(HashFunction hashFunction)
 void destroyHashMap(HashMap* map)
 {
     for (int i = 0; i < map->nBuckets; i++)
-        freeLinkedList(map->bucket[i]);
-    free(map->bucket);
+        freeLinkedList(map->buckets[i]);
+    free(map->buckets);
     free(map);
+}
+
+float getLoadFactor(HashMap* map)
+{
+    return (float)map->elementsCount / (float)map->nBuckets;
+}
+
+void moveToBigBuckets(HashMap* table)
+{
+    if (table->mode == 0) {
+        if (getLoadFactor(table) >= 1) {
+            table->nextBuckets = malloc(sizeof(List*) * 3 * table->nBuckets);
+            table->mode = 1;
+        }
+        return;
+    }
+    if (table->mode == 1) {
+        table->nextBuckets[table->nextBucketsIndex] = makeNewLinkedList();
+        table->nextBucketsIndex++;
+        if (table->nextBucketsIndex == table->nBuckets * 3) {
+            table->mode = 2;
+            table->nextBucketsIndex = 0;
+        }
+        return;
+    }
+    if (table->mode == 2) {
+        // do copy from bucket to newBucket
+        bool doneCopy = false;
+        table->nextBuckets[table->nextBucketsIndex] = table->buckets[table->nextBucketsIndex];
+        table->nextBucketsIndex++;
+        if (table->nextBucketsIndex == table->nBuckets) {
+            doneCopy = true;
+            table->nextBucketsIndex = 0;
+        }
+        if (doneCopy) {
+            free(table->buckets);
+            table->buckets = table->nextBuckets;
+            table->mode = 0;
+        }
+    }
 }
 
 Value get(HashMap* map, Value key)
 {
-    int keyHash = hashFunction(key);
-    deleteFromList(table->bucket[keyHash], key);
-    bool result = insert(key, value, getListSize(table->bucket[keyHash]), table->bucket[keyHash]);
-
-    if (getLoadFactor(table) > HASH_TABLE_LOAD_BORDER) {
-        table->nextBuckets = malloc(...);
-        table->mode = 1;
-    }
+    moveToBigBuckets(map);
+    uint32_t keyHash = map->function(key, map->nBuckets);
+    return getElementDataByIndex(map->buckets[keyHash], key);
 }
 
-//
-//void moveToBigBuckets(HashMap* table)
-//{
-//    if (table->mode == 0)
-//        return;
-//    if (table->mode == 1) {
-//        table->nextBuckets[table->nextBucketsIndex] = makeNewLinkedList();
-//        table->nextBucketIndex++;
-//        if (table->nextBucketIndex == table->nBuckets * 2)
-//            table->mode = 2;
-//        return;
-//    }
-//    if (table->mode == 2) {
-//        // do copy from bucket to newBucket
-//
-//        if (doneCopy) {
-//            free(table->bucket);
-//            table->bucket = table->nextBuckets;
-//            table->mode = 0;
-//        }
-//    }
-//}
-
-
-bool hashTableInsert(HashTable* table, char* key, char* value) {
-    moveToBigBuckets(table);
-    int keyHash = calculateHash(key, HASH_POLYNOMIAL_PARAMETER, table->nBuckets);
-    deleteFromList(table->bucket[keyHash], key);
-    bool result = insert(key, value, getListSize(table->bucket[keyHash]), table->bucket[keyHash]);
-
-    if (getLoadFactor(table) > HASH_TABLE_LOAD_BORDER) {
-        table->nextBuckets = malloc(...);
-        table->mode = 1;
-    }
+bool hasKey(HashMap* map, Value key)
+{
+    return !isNone(get(map, key));
 }
 
-char* getValueFromHashTable(HashTable* table, char* key) {
-    moveToBigBuckets(table);
+void put(HashMap* map, Value key, Value value)
+{
+    moveToBigBuckets(map);
+    uint32_t keyHash = map->function(key, map->nBuckets);
+    // Memory leak
+    deleteFromList(map->buckets[keyHash], key);
+    putElement(map->buckets[keyHash], key, value);
+}
+
+Pair removeKey(HashMap* map, Value key)
+{
+    moveToBigBuckets(map);
+    Pair* pair = createPair();
+    pair->key = key;
+    pair->value = get(map, key);
+    uint32_t keyHash = map->function(key, map->nBuckets);
+    deleteFromList(map->buckets[keyHash], key);
+}
+
+int getSize(HashMap* map)
+{
+    return map->nBuckets;
 }

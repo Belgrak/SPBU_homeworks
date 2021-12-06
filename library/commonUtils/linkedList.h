@@ -7,11 +7,12 @@ typedef struct LinkedList List;
 typedef struct LinkedListElement LinkedListElement;
 
 List* makeNewLinkedList();
-LinkedListElement* makeNewLinkedListElement(Value data);
+LinkedListElement* makeNewLinkedListElement(Value key, Value data);
 
-Value getElementDataByIndex(List* list, int index);
-void putElement(struct LinkedList* list, Value data);
+Value getElementDataByIndex(List* list, Value key);
+void putElement(struct LinkedList* list, Value key, Value data);
 int getSizeList(List* list);
+void deleteFromList(List* list, Value key);
 void freeLinkedList(List* list);
 
 #endif // SPBU_C_HOMEWORKS_LINKEDLIST_H
