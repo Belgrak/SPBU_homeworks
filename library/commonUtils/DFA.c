@@ -58,7 +58,7 @@ void addState(DFA* automaton, State* state)
     automaton->states[automaton->nStates - 1] = state;
 }
 
-State* existState(State** states, int nStates, int position)
+State* getStateByPosition(State** states, int nStates, int position)
 {
     for (int i = 0; i < nStates; i++)
         if (states[i]->position == position)
@@ -76,11 +76,11 @@ DFA* createDFA(int n, Transition** transitions, int m, int* finalPositions, int 
     automaton->states = NULL;
     memcpy(automaton->finalPositions, finalPositions, m * sizeof(int));
     for (int i = 0; i < n; i++) {
-        State* current = existState(automaton->states, automaton->nStates, transitions[i]->source);
+        State* current = getStateByPosition(automaton->states, automaton->nStates, transitions[i]->source);
         if (!current)
             current = createState(transitions[i]->source);
         addTransition(current, transitions[i]);
-        if (!existState(automaton->states, automaton->nStates, transitions[i]->source))
+        if (!getStateByPosition(automaton->states, automaton->nStates, transitions[i]->source))
             addState(automaton, current);
     }
     return automaton;
@@ -91,7 +91,7 @@ bool belongsToLanguage(DFA* automaton, char* string, int* error)
     int currentPosition = automaton->startPosition;
     for (int i = 0; i < strlen(string); i++) {
         char symbol = string[i];
-        State* currentState = existState(automaton->states, automaton->nStates, currentPosition);
+        State* currentState = getStateByPosition(automaton->states, automaton->nStates, currentPosition);
         if (!currentState) {
             *error = WRONG_DFA;
             return false;
