@@ -28,6 +28,14 @@ struct HashMap {
     int elementsCount;
 };
 
+struct HashMapIterator{
+    int nBuckets;
+    List** buckets;
+    int bucketIndex;
+    int bucketElementIndex;
+    bool isEnd;
+};
+
 uint32_t hashFunction(Value value, int nBuckets)
 {
     char* targetString = getString(value);
@@ -47,6 +55,7 @@ HashMap* createHashMap(HashFunction hashFunction, int size)
 {
     HashMap* table = malloc(sizeof(HashMap));
     table->nBuckets = size;
+    table->nextBucketsIndex = 0;
     table->mode = 0;
     table->elementsCount = 0;
     table->function = hashFunction;
@@ -80,8 +89,10 @@ void moveToBigBuckets(HashMap* table)
         return;
     }
     if (table->mode == 1) {
-        table->nextBuckets[table->nextBucketsIndex] = makeNewLinkedList();
-        table->nextBucketsIndex++;
+        for (int i = 0; i < 3 && table->nextBucketsIndex != table->nBuckets * 3; i++) {
+            table->nextBuckets[table->nextBucketsIndex] = makeNewLinkedList();
+            table->nextBucketsIndex++;
+        }
         if (table->nextBucketsIndex == table->nBuckets * 3) {
             table->mode = 2;
             table->nextBucketsIndex = 0;
@@ -91,8 +102,10 @@ void moveToBigBuckets(HashMap* table)
     if (table->mode == 2) {
         // do copy from bucket to newBucket
         bool doneCopy = false;
-        table->nextBuckets[table->nextBucketsIndex] = table->buckets[table->nextBucketsIndex];
-        table->nextBucketsIndex++;
+        for (int i = 0; i < 3 && table->nextBucketsIndex != table->nBuckets * 3; i++) {
+            table->nextBuckets[table->nextBucketsIndex] = table->buckets[table->nextBucketsIndex];
+            table->nextBucketsIndex++;
+        }
         if (table->nextBucketsIndex == table->nBuckets) {
             doneCopy = true;
             table->nextBucketsIndex = 0;
@@ -109,7 +122,7 @@ Value get(HashMap* map, Value key)
 {
     moveToBigBuckets(map);
     uint32_t keyHash = map->function(key, map->nBuckets);
-    return getElementDataByIndex(map->buckets[keyHash], key);
+    return getElementDataByKey(map->buckets[keyHash], key);
 }
 
 bool hasKey(HashMap* map, Value key)
@@ -126,7 +139,7 @@ void put(HashMap* map, Value key, Value value)
     putElement(map->buckets[keyHash], key, value);
 }
 
-Pair removeKey(HashMap* map, Value key)
+Pair* removeKey(HashMap* map, Value key)
 {
     moveToBigBuckets(map);
     Pair* pair = createPair();
@@ -134,9 +147,64 @@ Pair removeKey(HashMap* map, Value key)
     pair->value = get(map, key);
     uint32_t keyHash = map->function(key, map->nBuckets);
     deleteFromList(map->buckets[keyHash], key);
+    return pair;
 }
 
 int getSize(HashMap* map)
 {
     return map->nBuckets;
+}
+
+HashMapIterator* getIterator(HashMap* map){
+    HashMapIterator* iterator = malloc(sizeof(HashMapIterator));
+    iterator->nBuckets = map->nBuckets;
+    iterator->buckets = map->buckets;
+    iterator->isEnd = false;
+    iterator->bucketIndex = 0;
+    for (int i = 0; i < iterator->nBuckets; i++){
+        if (getSizeList(iterator->buckets[i]) > 0){
+            iterator->bucketIndex = i;
+            break;
+        }
+    }
+    iterator->bucketElementIndex = 0;
+    return iterator;
+}
+
+Value getValue(HashMapIterator* iterator){
+    if (iterator->isEnd)
+        return wrapNone();
+    if (iterator->bucketIndex < iterator->nBuckets){
+        if (iterator->bucketElementIndex < getSizeList(iterator->buckets[iterator->bucketIndex]))
+            return getElementValue(getElementByIndex(iterator->buckets[iterator->bucketIndex], iterator->bucketElementIndex));
+    }
+    return wrapNone();
+}
+
+Value getKey(HashMapIterator* iterator){
+    if (iterator->isEnd)
+        return wrapNone();
+    if (iterator->bucketIndex < iterator->nBuckets){
+        if (iterator->bucketElementIndex < getSizeList(iterator->buckets[iterator->bucketIndex]))
+            return getElementKey(getElementByIndex(iterator->buckets[iterator->bucketIndex], iterator->bucketElementIndex));
+    }
+    return wrapNone();
+}
+
+HashMapIterator* next(HashMapIterator* iterator){
+    if (iterator->bucketElementIndex < getSizeList(iterator->buckets[iterator->bucketIndex]) - 1)
+        iterator->bucketElementIndex++;
+    else {
+        int previousIndex = iterator->bucketIndex;
+        for (int i = iterator->bucketIndex + 1; i < iterator->nBuckets; i++){
+            if (getSizeList(iterator->buckets[i]) > 0 ){
+                iterator->bucketIndex = i;
+                break;
+            }
+        }
+        if (previousIndex == iterator->bucketIndex)
+            iterator->isEnd = true;
+        iterator->bucketElementIndex = 0;
+    }
+    return iterator;
 }

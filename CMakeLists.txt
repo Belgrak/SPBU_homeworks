@@ -6,7 +6,6 @@ set(CMAKE_C_STANDARD 11)
 set(SOURCE_LIB
     library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
-        library/commonUtils/linkedMap.c
         library/commonUtils/binary.c
         library/commonUtils/values.c
         library/commonUtils/hashMap.c

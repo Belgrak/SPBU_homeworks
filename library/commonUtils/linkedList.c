@@ -33,10 +33,30 @@ LinkedListElement* makeNewLinkedListElement(Value key, Value data)
     return newElement;
 }
 
-Value getElementDataByIndex(List* list, Value key)
-{
+Value getElementValue(LinkedListElement* current){
+    return current ? current->data : wrapNone();
+}
+
+Value getElementKey(LinkedListElement* current){
+    return current ? current->key : wrapNone();
+}
+
+LinkedListElement* getElementByIndex(List* list, int index){
+    if (!list->head)
+        return NULL;
     LinkedListElement* current = list->head;
-    for (int i = 0; i < list->linkedListSize && compare(key, current->key) != 0; i++)
+    int i = 0;
+    for (; i < list->linkedListSize && i != index; i++)
+        current = current->nextElement;
+    return i != index ? NULL : current;
+}
+
+Value getElementDataByKey(List* list, Value key)
+{
+    if (!list->head)
+        return wrapNone();
+    LinkedListElement* current = list->head;
+    for (int i = 1; i < list->linkedListSize && compare(key, current->key) != 0; i++)
         current = current->nextElement;
     return compare(key, current->key) != 0 ? wrapNone() : current->data;
 }
@@ -54,13 +74,20 @@ void putElement(struct LinkedList* list, Value key, Value data)
 
 void deleteFromList(List* list, Value key)
 {
-    LinkedListElement* current = list->head;
-    for (int i = 0; i < list->linkedListSize && compare(key, current->nextElement->key) != 0; i++)
-        current = current->nextElement;
-    if (compare(key, current->nextElement->key) == 0) {
-        LinkedListElement* next = current->nextElement->nextElement;
-        free(current->nextElement);
-        current->nextElement = next;
+    if (list->head) {
+        LinkedListElement* current = list->head;
+        if (compare(key, current->key) != 0 && current->nextElement) {
+            for (int i = 2; i < list->linkedListSize && compare(key, current->nextElement->key) != 0; i++)
+                current = current->nextElement;
+            if (compare(key, current->nextElement->key) == 0) {
+                LinkedListElement* next = current->nextElement->nextElement;
+                free(current->nextElement);
+                current->nextElement = next;
+            }
+        } else if (compare(key, current->key) == 0) {
+            free(current);
+            list->head = NULL;
+        }
     }
 }
 

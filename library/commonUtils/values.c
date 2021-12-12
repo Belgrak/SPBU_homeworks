@@ -1,6 +1,7 @@
 #include "values.h"
 
 #include <assert.h>
+#include <malloc.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -26,7 +27,7 @@ Value wrapDouble(double value)
 
 Value wrapString(char* value)
 {
-    return (Value) { .type = STRING_TYPE, .stringValue = value };
+    return (Value) { .type = STRING_TYPE, .stringValue = strdup(value) };
 }
 
 Value wrapPointer(void* value)
