@@ -43,14 +43,18 @@ State* createState(int position)
 void addTransition(State* state, Transition* transition)
 {
     state->nTransitions++;
-    state->transitions = state->nTransitions == 1 ? malloc(sizeof(Transition*)) : realloc(state->transitions, state->nTransitions * sizeof(Transition*));
+    if (state->nTransitions == 1)
+        state->transitions = malloc(sizeof(Transition*));
+    state->transitions = realloc(state->transitions, state->nTransitions * sizeof(Transition*));
     state->transitions[state->nTransitions - 1] = transition;
 }
 
 void addState(DFA* automaton, State* state)
 {
     automaton->nStates++;
-    automaton->states = automaton->nStates == 1 ? malloc(sizeof(State*)) : realloc(automaton->states, automaton->nStates * sizeof(State*));
+    if (automaton->nStates == 1)
+        automaton->states = malloc(sizeof(State*));
+    automaton->states = realloc(automaton->states, automaton->nStates * sizeof(State*));
     automaton->states[automaton->nStates - 1] = state;
 }
 
