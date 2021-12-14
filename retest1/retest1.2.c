@@ -4,10 +4,10 @@
 
 void countAlphas(FILE* fileInput, LinkedMap* map)
 {
-    while (feof(fileInput)) {
+    while (!feof(fileInput)) {
         char symbol = getc(fileInput);
         if (isalpha(symbol) && symbol >= 97)
-            put(map, symbol, get(map, symbol, 0));
+            put(map, symbol, get(map, symbol, 0) + 1);
     }
 }
 
@@ -15,7 +15,7 @@ void outputResult(FILE* fileOutput, LinkedMap* map)
 {
     for (char i = 'a'; i <= 'z'; i++) {
         if (get(map, i, 0) != 0)
-            fprintf(fileOutput, "%c: %d", i, get(map, i, 0));
+            fprintf(fileOutput, "%c: %d\n", i, get(map, i, 0));
     }
 }
 

@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
 struct LinkedMap {
     LinkedMapElement* head;
@@ -96,6 +95,6 @@ void freeLinkedMap(LinkedMap* map)
         map->head = currentElement;
         currentElement = currentElement->nextElement;
     }
-    map->linkedMapSize = 0;
+    free(map->head);
     free(map);
 }

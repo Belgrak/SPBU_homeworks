@@ -4,12 +4,12 @@ project(spbu_c_homeworks C)
 set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_LIB
-    library/commonUtils/numericOperations.c
+        library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
         library/commonUtils/binary.c
         library/commonUtils/DFA.c
-)
+        )
 add_library(library ${SOURCE_LIB})
 
 add_executable(task1.1 homework1/task_1.c)
