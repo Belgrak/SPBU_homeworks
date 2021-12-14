@@ -33,16 +33,22 @@ int* sort(int* array, int size)
 {
     int* sortedArray = calloc(size, sizeof(int));
     memcpy(sortedArray, array, size * sizeof(int));
-    int k = 1;
+    int firstArraySize = 1;
     int* tempArray = NULL;
-    while (k <= size) {
-        for (int i = 0, j = k; i < size; i += 2 * k, j += 2 * k) {
-            tempArray = merge(sortedArray + i, k, j >= size ? NULL : sortedArray + j, j >= size ? 0 : fmin(k, size - j));
-            memcpy(sortedArray + i, tempArray, (k + (j >= size ? 0 : fmin(k, size - j))) * sizeof(int));
+    while (firstArraySize <= size) {
+        for (int i = 0, j = firstArraySize; i < size; i += 2 * firstArraySize, j += 2 * firstArraySize) {
+            int* secondArray = NULL;
+            int secondArraySize = 0;
+            if (j < size) {
+                secondArray = sortedArray + j;
+                secondArraySize = fmin(firstArraySize, size - j);
+            }
+            tempArray = merge(sortedArray + i, firstArraySize, secondArray, secondArraySize);
+            memcpy(sortedArray + i, tempArray, (firstArraySize + secondArraySize) * sizeof(int));
             if (tempArray)
                 free(tempArray);
         }
-        k *= 2;
+        firstArraySize *= 2;
     }
     return sortedArray;
 }
