@@ -9,6 +9,7 @@ set(SOURCE_LIB
         library/commonUtils/linkedMap.c
         library/commonUtils/binary.c
         library/commonUtils/DFA.c
+        library/commonUtils/complexNumber.c
 )
 add_library(library ${SOURCE_LIB})
 
@@ -36,3 +37,6 @@ add_executable(test2.2 test2/test2.2.c)
 
 add_executable(task8.2 homework8/task8.2.c)
 target_link_libraries(task8.2 library)
+
+add_executable(retest1.1 retest1/retest1.1.c)
+target_link_libraries(retest1.1 library m)
