@@ -86,6 +86,10 @@ char getKeyByIndex(LinkedMap* map, int index)
 
 void freeLinkedMap(LinkedMap* map)
 {
+    if (!map->head) {
+        free(map);
+        return;
+    }
     LinkedMapElement* currentElement = map->head->nextElement;
     for (int i = 0; i < map->linkedMapSize - 1; i++) {
         free(map->head);

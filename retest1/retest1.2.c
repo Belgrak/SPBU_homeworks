@@ -21,15 +21,15 @@ void outputResult(FILE* fileOutput, LinkedMap* map)
 
 int main(int argc, char* argv[])
 {
-        if (argc > 2) {
-            printf("Error handled. Too much arguments.\n");
-            return 0;
-        }
-        if (argc < 2) {
-            printf("Error handled. You should enter <Program name> <Src file's path>\n");
-            return 0;
-        }
-    FILE* fileInput = fopen(argv[1], "r");
+//    if (argc > 2) {
+//        printf("Error handled. Too much arguments.\n");
+//        return 0;
+//    }
+//    if (argc < 2) {
+//        printf("Error handled. You should enter <Program name> <Src file's path>\n");
+//        return 0;
+//    }
+    FILE* fileInput = fopen("../r.txt", "r");
     if (!fileInput) {
         printf("Error handled. Wrong src file path.");
         return 0;

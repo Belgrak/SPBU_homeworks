@@ -38,3 +38,4 @@ add_executable(task8.2 homework8/task8.2.c)
 target_link_libraries(task8.2 library)
 
 add_executable(retest1.2 retest1/retest1.2.c)
+target_link_libraries(retest1.2 library)
