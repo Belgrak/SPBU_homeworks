@@ -4,7 +4,7 @@ project(spbu_c_homeworks C)
 set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_LIB
-    library/commonUtils/numericOperations.c
+        library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
         library/commonUtils/binary.c
@@ -40,3 +40,5 @@ target_link_libraries(task8.2 library)
 
 add_executable(retest1.1 retest1/retest1.1.c)
 target_link_libraries(retest1.1 library m)
+add_executable(retest1.2 retest1/retest1.2.c)
+target_link_libraries(retest1.2 library)
