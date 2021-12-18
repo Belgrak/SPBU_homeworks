@@ -109,19 +109,19 @@ TreeMap* createTreeMap(Comparator comparator)
     return tree;
 }
 
-void freeNode(Node* node, Node* replacedNode)
+void freeNode(Node* node)
 {
-    if (node->leftChild && node->leftChild != replacedNode)
-        freeNode(node->leftChild, replacedNode);
-    if (node->rightChild && node->rightChild != replacedNode)
-        freeNode(node->rightChild, replacedNode);
+    if (node->leftChild)
+        freeNode(node->leftChild);
+    if (node->rightChild)
+        freeNode(node->rightChild);
     free(node);
 }
 
 void deleteTreeMap(TreeMap* map)
 {
     if (map->root)
-        freeNode(map->root, NULL);
+        freeNode(map->root);
     free(map);
 }
 
@@ -152,7 +152,7 @@ Node* getMax(Node* node)
 
 Value getMaximum(TreeMap* map)
 {
-    return getMax(map->root)->key;
+    return map->root ? getMax(map->root)->key : wrapNone();
 }
 
 Node* getMin(Node* node)
@@ -162,7 +162,7 @@ Node* getMin(Node* node)
 
 Value getMinimum(TreeMap* map)
 {
-    return getMin(map->root)->key;
+    return map->root ? getMin(map->root)->key : wrapNone();
 }
 
 Node* removeMin(Node* node)
@@ -170,6 +170,7 @@ Node* removeMin(Node* node)
     if (!node->leftChild)
         return node->rightChild;
     node->leftChild = removeMin(node->leftChild);
+    updateHeight(node);
     return balance(node);
 }
 
@@ -186,21 +187,23 @@ Node* deleteNode(Node* root, Value key, Comparator comparator)
         Node* right = root->rightChild;
         root->leftChild = NULL;
         root->rightChild = NULL;
-        freeNode(root, NULL);
+        freeNode(root);
         if (!right)
             return left;
         Node* newRoot = getMin(right);
         newRoot->rightChild = removeMin(right);
         newRoot->leftChild = left;
+        updateHeight(newRoot);
         return balance(newRoot);
     }
+    updateHeight(root);
     return balance(root);
 }
 
 Pair* removeKey(TreeMap* map, Value key)
 {
     Pair* pair = createPair();
-    if (!(hasKey(map, key) && map->root))
+    if (!(hasKey(map, key)))
         return pair;
     pair->key = key;
     pair->value = get(map, key);
@@ -238,13 +241,16 @@ Value getUpperBound(TreeMap* map, Value key)
 {
     Node* previous = NULL;
     Node* current = map->root;
-    if (map->comparator(getMaximum(map), key) > 0 && map->root) {
+    if (!map->root)
+        return wrapNone();
+    if (map->comparator(getMaximum(map), key) > 0) {
         while (current) {
-            previous = map->comparator(current->key, key) > 0 ? (previous ? (map->comparator(current->key, previous->key) < 0 ? current : previous) : current) : previous;
-            if (map->comparator(current->key, key) > 0)
-                current = current->leftChild;
-            else
+            if (map->comparator(current->key, key) <= 0) {
                 current = current->rightChild;
+                continue;
+            }
+            previous = previous ? (map->comparator(current->key, previous->key) < 0 ? current : previous) : current;
+            current = current->leftChild;
         }
     }
     Value resultKey = wrapNone();
