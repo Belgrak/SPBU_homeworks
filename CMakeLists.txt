@@ -4,13 +4,13 @@ project(spbu_c_homeworks C)
 set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_LIB
-    library/commonUtils/numericOperations.c
+        library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
         library/commonUtils/mergeSort.c
         library/commonUtils/binary.c
         library/commonUtils/DFA.c
-
+        library/commonUtils/complexNumber.c
 )
 add_library(library ${SOURCE_LIB})
 
@@ -41,6 +41,11 @@ add_executable(test2.2 test2/test2.2.c)
 
 add_executable(task8.2 homework8/task8.2.c)
 target_link_libraries(task8.2 library)
+
+add_executable(retest1.1 retest1/retest1.1.c)
+target_link_libraries(retest1.1 library m)
+add_executable(retest1.2 retest1/retest1.2.c)
+target_link_libraries(retest1.2 library)
 
 add_executable(final2 final/final2.c)
 target_link_libraries(final2 library m)
