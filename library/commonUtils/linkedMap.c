@@ -92,6 +92,7 @@ void freeLinkedMap(LinkedMap* map)
         map->head = currentElement;
         currentElement = currentElement->nextElement;
     }
+    free(map->head);
     map->linkedMapSize = 0;
     free(map);
 }
