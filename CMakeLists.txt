@@ -41,3 +41,6 @@ add_executable(test2.2 test2/test2.2.c)
 
 add_executable(task8.2 homework8/task8.2.c)
 target_link_libraries(task8.2 library)
+
+add_executable(final1 final/final1.c)
+target_link_libraries(final1 library)
