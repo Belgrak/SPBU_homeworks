@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
 struct LinkedMap {
     LinkedMapElement* head;
@@ -23,6 +22,7 @@ LinkedMap* makeNewLinkedMap()
     return map;
 }
 
+
 LinkedMapElement* makeNewLinkedMapElement(int key, int data)
 {
     LinkedMapElement* newElement = malloc(sizeof(LinkedMapElement));
@@ -31,6 +31,7 @@ LinkedMapElement* makeNewLinkedMapElement(int key, int data)
     newElement->nextElement = NULL;
     return newElement;
 }
+
 
 LinkedMapElement* getElement(LinkedMap* map, int key)
 {
@@ -41,10 +42,12 @@ LinkedMapElement* getElement(LinkedMap* map, int key)
     return NULL;
 }
 
+
 bool hasKey(LinkedMap* map, int key)
 {
     return getElement(map, key);
 }
+
 
 void put(LinkedMap* map, int key, int data)
 {
@@ -65,6 +68,7 @@ void put(LinkedMap* map, int key, int data)
     }
 }
 
+
 int get(LinkedMap* map, int key, int defaultValue)
 {
     LinkedMapElement* currentElement = getElement(map, key);
@@ -76,6 +80,7 @@ int getSize(LinkedMap* map)
     return map->linkedMapSize;
 }
 
+
 int getKeyByIndex(LinkedMap* map, int index)
 {
     LinkedMapElement* currentElement = map->head;
@@ -86,6 +91,10 @@ int getKeyByIndex(LinkedMap* map, int index)
 
 void freeLinkedMap(LinkedMap* map)
 {
+    if (!map->head) {
+        free(map);
+        return;
+    }
     LinkedMapElement* currentElement = map->head->nextElement;
     for (int i = 0; i < map->linkedMapSize - 1; i++) {
         free(map->head);
