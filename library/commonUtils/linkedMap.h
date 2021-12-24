@@ -7,12 +7,9 @@ typedef struct LinkedMapElement LinkedMapElement;
 
 LinkedMap* makeNewLinkedMap();
 
-bool hasKey(LinkedMap* map, char key);
-void put(LinkedMap* map, char key, int value);
-int get(LinkedMap* map, char key, int defaultValue);
-
+void put(LinkedMap* map, int value);
 int getSize(LinkedMap* map);
-char getKeyByIndex(LinkedMap* map, int index);
+int getByIndex(LinkedMap* map, int index, int defaultValue);
 void freeLinkedMap(LinkedMap* map);
 
 #endif // SPBU_C_HOMEWORKS_LinkedMap_H
