@@ -42,3 +42,5 @@ add_executable(retest1.1 retest1/retest1.1.c)
 target_link_libraries(retest1.1 library m)
 add_executable(retest1.2 retest1/retest1.2.c)
 target_link_libraries(retest1.2 library)
+
+add_executable(retest.final3 final2/retest.final3.c)
