@@ -1,18 +1,18 @@
-#include "../library/commonUtils/linkedMap.h"
+#include "../library/commonUtils/list.h"
 #include <stdio.h>
 #define DEFAULT_VALUE 0
 
-void readElementsFromFile(LinkedMap* linkedMap, FILE* fileInput)
+void readElementsFromFile(List* list, FILE* fileInput)
 {
     int number = 0;
     while (fscanf(fileInput, "%d", &number) != EOF)
-        put(linkedMap, number);
+        putElement(list, number);
 }
 
-bool isSymmetric(LinkedMap* map)
+bool isSymmetric(List* list)
 {
-    for (int i = 0, j = getSize(map) - 1; i != j && i - j != 1; i++, j--) {
-        if (getByIndex(map, i, DEFAULT_VALUE) != getByIndex(map, j, DEFAULT_VALUE))
+    for (int i = 0, j = getListSize(list) - 1; i != j && i - j != 1; i++, j--) {
+        if (getByIndex(list, i, DEFAULT_VALUE) != getByIndex(list, j, DEFAULT_VALUE))
             return false;
     }
     return true;
@@ -34,11 +34,11 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    LinkedMap* linkedMap = makeNewLinkedMap();
-    readElementsFromFile(linkedMap, fileInput);
+    List* list = makeNewList();
+    readElementsFromFile(list, fileInput);
     printf("This list is ");
-    printf(isSymmetric(linkedMap) ? "symmetric" : "not symmetric");
-    freeLinkedMap(linkedMap);
+    printf(isSymmetric(list) ? "symmetric" : "not symmetric");
+    freeList(list);
     fclose(fileInput);
     return 0;
 }

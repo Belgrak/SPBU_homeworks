@@ -7,6 +7,7 @@ set(SOURCE_LIB
         library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
+        library/commonUtils/list.c
         library/commonUtils/binary.c
         library/commonUtils/DFA.c
         library/commonUtils/complexNumber.c
