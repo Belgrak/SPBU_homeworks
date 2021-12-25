@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
 struct LinkedMap {
     LinkedMapElement* head;
@@ -12,7 +11,7 @@ struct LinkedMap {
 struct LinkedMapElement {
     int data;
     LinkedMapElement* nextElement;
-    char* key;
+    char key;
 };
 
 LinkedMap* makeNewLinkedMap()
@@ -23,30 +22,30 @@ LinkedMap* makeNewLinkedMap()
     return map;
 }
 
-LinkedMapElement* makeNewLinkedMapElement(const char* key, int data)
+LinkedMapElement* makeNewLinkedMapElement(const char key, int data)
 {
     LinkedMapElement* newElement = malloc(sizeof(LinkedMapElement));
-    newElement->key = strdup(key);
+    newElement->key = key;
     newElement->data = data;
     newElement->nextElement = NULL;
     return newElement;
 }
 
-LinkedMapElement* getElement(LinkedMap* map, const char* key)
+LinkedMapElement* getElement(LinkedMap* map, const char key)
 {
     for (LinkedMapElement* currentElement = map->head; currentElement; currentElement = currentElement->nextElement) {
-        if (strcmp(currentElement->key, key) == 0)
+        if (currentElement->key == key)
             return currentElement;
     }
     return NULL;
 }
 
-bool hasKey(LinkedMap* map, const char* key)
+bool hasKey(LinkedMap* map, const char key)
 {
     return getElement(map, key);
 }
 
-void put(LinkedMap* map, const char* key, int data)
+void put(LinkedMap* map, const char key, int data)
 {
     if (map->linkedMapSize == 0) {
         LinkedMapElement* newElement = makeNewLinkedMapElement(key, data);
@@ -65,7 +64,7 @@ void put(LinkedMap* map, const char* key, int data)
     }
 }
 
-int get(LinkedMap* map, const char* key, int defaultValue)
+int get(LinkedMap* map, const char key, int defaultValue)
 {
     LinkedMapElement* currentElement = getElement(map, key);
     return currentElement ? currentElement->data : defaultValue;
@@ -76,7 +75,7 @@ int getSize(LinkedMap* map)
     return map->linkedMapSize;
 }
 
-char* getKeyByIndex(LinkedMap* map, int index)
+char getKeyByIndex(LinkedMap* map, int index)
 {
     LinkedMapElement* currentElement = map->head;
     for (int i = 0; i < index; i++)
@@ -86,13 +85,16 @@ char* getKeyByIndex(LinkedMap* map, int index)
 
 void freeLinkedMap(LinkedMap* map)
 {
+    if (!map->head) {
+        free(map);
+        return;
+    }
     LinkedMapElement* currentElement = map->head->nextElement;
     for (int i = 0; i < map->linkedMapSize - 1; i++) {
-        free(map->head->key);
         free(map->head);
         map->head = currentElement;
         currentElement = currentElement->nextElement;
     }
-    map->linkedMapSize = 0;
+    free(map->head);
     free(map);
 }
