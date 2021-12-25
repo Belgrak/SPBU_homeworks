@@ -7,6 +7,7 @@ set(SOURCE_LIB
         library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
+        library/commonUtils/list.c
         library/commonUtils/binary.c
         library/commonUtils/DFA.c
         library/commonUtils/complexNumber.c
@@ -42,3 +43,6 @@ add_executable(retest1.1 retest1/retest1.1.c)
 target_link_libraries(retest1.1 library m)
 add_executable(retest1.2 retest1/retest1.2.c)
 target_link_libraries(retest1.2 library)
+
+add_executable(retest2.3 final2/retest2.3.c)
+target_link_libraries(retest2.3 library)
