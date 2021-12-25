@@ -7,6 +7,8 @@ set(SOURCE_LIB
         library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
+        library/commonUtils/values.c
+        library/commonUtils/treeMap.c
         library/commonUtils/mergeSort.c
         library/commonUtils/binary.c
         library/commonUtils/DFA.c
@@ -17,6 +19,12 @@ set(SOURCE_LIB
         library/commonUtils/complexNumber.c
 )
 add_library(library ${SOURCE_LIB})
+
+set(TREE_LIB
+        library/commonUtils/values.c
+        library/commonUtils/treeMap.c
+        )
+add_library(treeMap ${TREE_LIB})
 
 add_executable(task1.1 homework1/task_1.c)
 target_link_libraries(task1.1 library)
@@ -37,8 +45,12 @@ add_executable(task3.2 homework3/task3_2.c)
 add_executable(task3.3 homework3/task3_3.c)
 target_link_libraries(task3.3 library)
 
+add_executable(task5.1 homework5/task5.1.c)
+target_link_libraries(task5.1 treeMap m)
+
 add_executable(task4.1 homework4/task4_1.c)
 target_link_libraries(task4.1 library m)
+
 
 add_executable(test2.1 test2/test2.1.c)
 target_link_libraries(test2.1 library)
