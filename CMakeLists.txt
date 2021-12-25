@@ -7,6 +7,9 @@ set(SOURCE_LIB
         library/commonUtils/numericOperations.c
         library/commonUtils/ioInputInteger.c
         library/commonUtils/linkedMap.c
+        library/commonUtils/mergeSort.c
+        library/commonUtils/binary.c
+        library/commonUtils/DFA.c
         library/commonUtils/linkedList.c
         library/commonUtils/list.c
         library/commonUtils/binary.c
@@ -33,6 +36,9 @@ target_link_libraries(task3.1 library m)
 add_executable(task3.2 homework3/task3_2.c)
 add_executable(task3.3 homework3/task3_3.c)
 target_link_libraries(task3.3 library)
+
+add_executable(task4.1 homework4/task4_1.c)
+target_link_libraries(task4.1 library m)
 
 add_executable(test2.1 test2/test2.1.c)
 target_link_libraries(test2.1 library)
