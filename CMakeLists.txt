@@ -61,9 +61,13 @@ target_link_libraries(retest1.1 library m)
 add_executable(retest1.2 retest1/retest1.2.c)
 target_link_libraries(retest1.2 library)
 
+add_executable(final2 final/final2.c)
+target_link_libraries(final2 library m)
+
 add_executable(final1 final/final1.c)
 target_link_libraries(final1 library m)
 
 add_executable(retest.final3 final2/retest.final3.c)
 add_executable(retest2.3 final2/retest2.3.c)
 target_link_libraries(retest2.3 library)
+
